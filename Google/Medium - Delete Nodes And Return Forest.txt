@@ -1,0 +1,65 @@
+/*
+
+https://leetcode.com/problems/delete-nodes-and-return-forest/
+
+*/
+
+void postorder(TreeNode* root,vector<TreeNode*>& lstmain,unordered_set<int> st){
+
+        if(root==NULL){
+            return;
+        }
+        postorder(root->left,lstmain,st);
+        postorder(root->right,lstmain,st);
+
+        if(root->left!=NULL and st.find(root->left->val)!=st.end()){
+
+            if(root->left->left!=NULL){
+                lstmain.push_back(root->left->left);
+            }
+            if(root->left->right!=NULL){
+                lstmain.push_back(root->left->right);
+            }
+            delete(root->left);
+            root->left=NULL;
+
+        }
+        if(root->right!=NULL and st.find(root->right->val)!=st.end()){
+            if(root->right->left!=NULL){
+                lstmain.push_back(root->right->left);
+            }
+            if(root->right->right!=NULL){
+                lstmain.push_back(root->right->right);
+            }
+            delete(root->right);
+            root->right=NULL;
+        }
+    }
+
+
+
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        // convert to_delete to set
+        unordered_set<int> st;
+        for(auto ele: to_delete){
+            st.insert(ele);
+        }
+
+        vector<TreeNode* > lstmain;
+        postorder(root,lstmain,st);
+
+        if(root!=NULL and st.find(root->val)!=st.end()){
+            if(root->left!=NULL){
+                lstmain.push_back(root->left);
+            }
+            if(root->right!=NULL){
+                lstmain.push_back(root->right);
+            }
+        }else{
+            lstmain.push_back(root);
+        }
+        return lstmain;
+
+
+
+    }
