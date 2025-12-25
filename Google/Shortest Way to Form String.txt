@@ -1,0 +1,59 @@
+/*
+https://leetcode.com/problems/shortest-way-to-form-string
+
+
+You are given two strings: source and target. A subsequence is a string formed by deleting some (possibly zero) characters from the original string without changing the order of the remaining characters. For example, "ace" is a subsequence of "abcde" (formed by taking the 1st, 3rd, and 5th characters), but "aec" is not a valid subsequence since it doesn't maintain the relative order.
+
+Your task is to find the minimum number of subsequences from the source string that, when concatenated together, form the target string. If it's impossible to form the target string using any number of subsequences from source, return -1.
+
+For example:
+
+If source = "abc" and target = "abcbc", you would need 2 subsequences: first taking "abc" and then taking "bc" from another iteration through source, giving you "abc" + "bc" = "abcbc".
+If source = "abc" and target = "acdbc", it would be impossible since 'd' doesn't exist in source, so you'd return -1.
+
+
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int function(string source,string target){
+    
+    int n=target.size();
+    
+    
+    int target_index=0;
+    int res=0;
+    
+    while(target_index<n){
+        int prev_index=target_index;
+        
+        for(auto ch: source){
+            if(ch==target[target_index]){
+                target_index++;
+            }
+        }
+        
+        if(target_index==prev_index){
+            return -1;
+        }
+        
+        res++;
+        
+        
+    }
+    return res;
+    
+    
+}
+
+
+int main() {
+	// your code goes here
+	
+	string source="abc";
+    string target="abcbc";
+    
+	cout<<function(source,target);
+	
+}

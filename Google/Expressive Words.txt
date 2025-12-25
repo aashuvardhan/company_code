@@ -1,0 +1,77 @@
+/*
+https://leetcode.com/problems/expressive-words/description/
+
+*/
+
+string word_shorten(string str){
+        string news="";
+        int count=1;
+        char curr=str[0];
+        for(int i=1;i<str.size();i++){
+            if(str[i]==curr){
+                count++;
+            }else{
+                news+=curr;
+                news+=to_string(count);
+                
+                count=1;
+                curr=str[i];
+            }
+        }
+        news+=curr;
+        news+=to_string(count);
+        
+        return news;
+    }
+
+    int expressiveWords(string s, vector<string>& words) {
+
+        //shortening of words
+        string main_word=word_shorten(s);
+        int n=main_word.size();
+
+        int counter=0;
+
+        for(auto ele: words){
+            string curr_wrd=word_shorten(ele);
+
+            if(n!=curr_wrd.size()){
+                //coz both the strings after shortening must be of same length
+                //including char and digit.
+                continue;
+            }else{
+                bool flag=false;
+                for(int i=0;i<n;i+=2){
+                    if(main_word[i]==curr_wrd[i]){
+                        if(main_word[i+1]<curr_wrd[i+1]){
+                            flag=true;
+                            break;
+                        }else if(main_word[i+1]==curr_wrd[i+1]){
+                            continue;
+                        }else{
+                            int val_main=main_word[i+1]-'0';
+                            int val_curr=curr_wrd[i+1]-'0';
+                            if(val_main>=3){
+                                continue;
+                            }else{
+                                flag=true;
+                                break;
+                            }
+                        }
+                    }else{
+                        flag=true;
+                        break;
+                    }
+                }
+
+                if(flag==false){
+                    counter++;
+                }
+            }
+
+
+        }
+        return counter;
+
+
+    }

@@ -1,0 +1,69 @@
+/*
+
+https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/
+
+
+*/
+
+
+int longestSubarray(vector<int>& nums, int limit) {
+
+        int n=nums.size();
+        if(n==1){
+            return 1;
+        }
+
+
+        vector<int> maxi;
+        maxi.push_back(0);
+
+        vector<int> mini;
+        mini.push_back(0);
+
+        int range=1;
+        int diff=0;
+
+        int start=0;
+        int end=1;
+
+        while(end<n){
+            // initialise the maxi and mini
+            while(maxi.size()!=0 and nums[*maxi.rbegin()]<=nums[end]){
+                maxi.erase(maxi.end()-1);
+            }
+            maxi.push_back(end);
+
+            while(mini.size()!=0 and nums[*mini.rbegin()]>=nums[end]){
+                mini.erase(mini.end()-1);
+            }
+            mini.push_back(end);
+
+            int diff=nums[*maxi.begin()]-nums[*mini.begin()];
+            //cout<<nums[*maxi.begin()]<<"   "<<nums[*mini.begin()]<<endl;
+
+            if(diff<=limit){
+                range=max(range,end-start+1);
+                end++;
+            }else{
+                start++;
+                while(maxi.size()!=0){
+                    if(*maxi.begin()<start){
+                        maxi.erase(maxi.begin());
+                    }else{
+                        break;
+                    }
+                }
+
+                while(mini.size()!=0){
+                    if(*mini.begin()<start){
+                        mini.erase(mini.begin());
+                    }else{
+                        break;
+                    }
+                }
+
+            }
+        }
+        return range;
+
+    }
