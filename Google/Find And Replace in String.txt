@@ -1,0 +1,56 @@
+/*
+https://leetcode.com/problems/find-and-replace-in-string/description/
+
+*/
+
+string findReplaceString(string s, vector<int>& indices, vector<string>& sources, vector<string>& targets) {
+        
+
+        vector<tuple<int,string,string>> valid_changes;
+        int k=sources.size();
+        for(int i=0;i<k;i++){
+            
+            int len_source=sources[i].size();
+            string sbstr=s.substr(indices[i],len_source);
+
+            if(sbstr==sources[i]){
+                valid_changes.push_back({indices[i],sources[i],targets[i]});
+
+            }
+        }
+
+        sort(valid_changes.begin(),valid_changes.end());
+
+        vector<string> news;
+        //considering no overlpping
+        
+        int prev=0;
+
+        for(auto ele: valid_changes){
+            int index=get<0>(ele);
+            int sbstr_size=get<1>(ele).size();
+            string target=get<2>(ele);
+            int diff=index-prev;
+
+            if(diff==0){
+                news.push_back(target);
+                prev+=sbstr_size;
+            }else{
+                news.push_back(s.substr(prev,diff));
+                prev+=diff;
+                news.push_back(target);
+                prev+=sbstr_size;
+            }
+        }
+        if(prev<s.size()){
+            int diff=s.size()-prev;
+            news.push_back(s.substr(prev,diff));
+        }
+        string res="";
+        for(auto ele: news){
+            res+=ele;
+        }
+
+        return res;
+
+    }
