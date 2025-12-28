@@ -1,0 +1,70 @@
+/*
+https://leetcode.com/problems/minimum-area-rectangle/description/
+
+*/
+
+
+static bool comp(vector<int> v1,vector<int> v2){
+        if(v1[0]<v2[0]){
+            return true;
+        }else if(v1[0]==v2[0]){
+            if(v1[1]<v2[1]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    vector<pair<int,int>> create_permutation(vector<int> lst){
+
+        vector<pair<int,int>> ans;
+        for(int i=0;i<lst.size()-1;i++){
+            for(int j=i+1;j<lst.size();j++){
+                ans.push_back({lst[i],lst[j]});
+            }
+        }
+
+        return ans;
+
+
+
+    }
+
+
+    int minAreaRect(vector<vector<int>>& points) {
+
+        sort(points.begin(),points.end(),comp);
+
+        map<int,vector<int>> mp;
+        vector<int> sorted_x;
+        for(auto ele: points){
+            mp[ele[0]].push_back(ele[1]);
+            if(sorted_x.size()==0){
+                sorted_x.push_back(ele[0]);
+            }else if(*(sorted_x.end()-1)==ele[0]){
+                continue;
+            }else{
+                sorted_x.push_back(ele[0]);
+            }
+        }
+
+        map<pair<int,int>,int> lastx;
+        int ans=INT_MAX;
+
+        for(auto x: sorted_x){
+            
+
+            vector<pair<int,int>> column_pair=create_permutation(mp[x]);
+            for(auto ele: column_pair){
+                if(lastx.find(ele)!=lastx.end()){
+                    ans=min(ans,(x-lastx[ele])*(ele.second-ele.first));
+                }
+                lastx[ele]=x;
+            }
+            
+
+
+        }
+        return (ans<INT_MAX)?ans:0;
+
+    }
