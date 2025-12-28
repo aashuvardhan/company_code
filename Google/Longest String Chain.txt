@@ -1,0 +1,30 @@
+/*
+https://leetcode.com/problems/longest-string-chain/description/
+
+*/
+
+static bool comp(string str1,string str2){
+        if(str1.size()<str2.size()){
+            return true;
+        }
+        return false;
+    }
+
+
+    int longestStrChain(vector<string>& words) {
+        sort(words.begin(),words.end(),comp);
+
+        unordered_map<string,int> dp;
+        int res=0;
+
+        for(auto w: words){
+
+            for(int i=0;i<w.size();i++){
+                string prev=w.substr(0,i)+w.substr(i+1);
+                dp[w]=max(dp[w],(dp.find(prev)==dp.end())?1:dp[prev]+1);
+            }
+            res=max(res,dp[w]);
+        }
+        return res;
+
+    }
