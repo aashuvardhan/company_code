@@ -1,0 +1,29 @@
+/*
+
+https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/description/
+
+
+*/
+
+bool isPossibleDivide(vector<int>& nums, int k) {
+        if (nums.size() % k != 0) return false;
+
+        map<int, int> freq;
+        for (int x : nums) freq[x]++;
+
+        while (!freq.empty()) {
+            int start = freq.begin()->first; // smallest card
+
+            for (int i = 0; i < k; i++) {
+                int card = start + i;
+
+                if (freq[card] == 0)
+                    return false;
+
+                freq[card]--;
+                if (freq[card] == 0)
+                    freq.erase(card);
+            }
+        }
+        return true;
+    }

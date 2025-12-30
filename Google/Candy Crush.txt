@@ -1,0 +1,112 @@
+/*
+https://leetcode.com/problems/candy-crush/description/
+
+https://algo.monster/liteproblems/723
+
+
+This problem asks you to implement the basic elimination mechanism from the game Candy Crush on a 2D grid.
+
+You're given an m x n integer array board where each board[i][j] represents a type of candy (positive integers), and 0 represents an empty cell. Your task is to simulate the candy crushing process until the board reaches a stable state.
+
+The crushing rules work as follows:
+
+Identify crushable candies: Find any group of three or more candies of the same type that are adjacent either horizontally or vertically. All such groups should be marked for crushing simultaneously.
+
+Crush the candies: Remove all marked candies at once by making those positions empty (setting them to 0).
+
+Apply gravity: After crushing, candies above empty spaces should fall down to fill the gaps. Candies drop straight down until they hit another candy or reach the bottom of the board. Multiple candies can fall simultaneously.
+
+Repeat until stable: After candies drop, new crushing opportunities may appear. Keep repeating steps 1-3 until no more candies can be crushed.
+
+The solution uses a clever marking technique - instead of immediately removing candies, it marks them with negative values first. This allows the algorithm to identify all crushable groups in one pass before actually removing them. The gravity simulation is implemented by using a two-pointer approach to shift non-empty candies downward in each column.
+
+For example, if you have a row like [1, 1, 1, 2], the three consecutive 1s would be crushed, leaving [0, 0, 0, 2] after applying gravity. The process continues until no more groups of three or more identical candies exist in any row or column.
+
+
+
+
+The key insight is that we need to simulate the actual Candy Crush game mechanics, which involves repeatedly finding matches and applying gravity until no more moves are possible.
+
+The first challenge is how to handle simultaneous crushing. If we immediately remove candies as we find them, we might miss overlapping groups. For instance, if we have a cross pattern where both a horizontal and vertical group of three share a candy, we need to crush all of them together. The clever trick here is to use negative numbers as markers. When we find a group of three or more matching candies, instead of removing them immediately, we mark them by making their values negative. This preserves the candy type information (through abs()) while flagging them for removal.
+
+Why negative numbers? Because:
+
+They're distinguishable from positive candy values
+We can still identify the candy type using abs()
+Empty cells (0) remain unaffected
+We can check multiple patterns without losing information
+The second insight is about the order of operations. We first scan horizontally across all rows, then vertically down all columns. This ensures we catch all possible matches in a single iteration. We check for patterns of three consecutive candies by comparing board[i][j], board[i][j-1], and board[i][j-2] for horizontal matches (and similar for vertical).
+
+For the gravity simulation, we use a two-pointer technique for each column. Starting from the bottom of each column, we maintain a write pointer k that tracks where the next non-crushed candy should be placed. As we scan upward, whenever we find a positive value (non-crushed candy), we move it to position k and decrement k. After processing all candies, any remaining positions above k are filled with zeros.
+
+The overall flow becomes: mark crushable candies → apply gravity → check if anything was crushed → repeat if necessary. The run flag tracks whether any crushing occurred in the current iteration, determining whether we need another round.
+
+*/
+
+vector<vector<int>> candyCrush(vector<vector<int>>& board) {
+        int rows = board.size();
+        int cols = board[0].size();
+        bool shouldContinue = true;
+
+        while (shouldContinue) {
+            shouldContinue = false;
+
+            // Mark horizontal matches (3 or more consecutive same candies)
+            for (int row = 0; row < rows; ++row) {
+                for (int col = 0; col < cols - 2; ++col) {
+                    // Check if current position has candy and next two positions have same candy type
+                    if (board[row][col] != 0 &&
+                        abs(board[row][col]) == abs(board[row][col + 1]) &&
+                        abs(board[row][col]) == abs(board[row][col + 2])) {
+                        shouldContinue = true;
+                        // Mark candies as negative to indicate they should be crushed
+                        board[row][col] = -abs(board[row][col]);
+                        board[row][col + 1] = -abs(board[row][col + 1]);
+                        board[row][col + 2] = -abs(board[row][col + 2]);
+                    }
+                }
+            }
+
+            // Mark vertical matches (3 or more consecutive same candies)
+            for (int col = 0; col < cols; ++col) {
+                for (int row = 0; row < rows - 2; ++row) {
+                    // Check if current position has candy and next two positions have same candy type
+                    if (board[row][col] != 0 &&
+                        abs(board[row][col]) == abs(board[row + 1][col]) &&
+                        abs(board[row][col]) == abs(board[row + 2][col])) {
+                        shouldContinue = true;
+                        // Mark candies as negative to indicate they should be crushed
+                        board[row][col] = -abs(board[row][col]);
+                        board[row + 1][col] = -abs(board[row + 1][col]);
+                        board[row + 2][col] = -abs(board[row + 2][col]);
+                    }
+                }
+            }
+
+            // Drop candies and remove crushed ones
+            if (shouldContinue) {
+                for (int col = 0; col < cols; ++col) {
+                    int writePosition = rows - 1;  // Position to write the next valid candy
+
+                    // Move all positive (non-crushed) candies down
+                    for (int row = rows - 1; row >= 0; --row) {
+                        if (board[row][col] > 0) {
+                            board[writePosition][col] = board[row][col];
+                            --writePosition;
+                        }
+                    }
+
+                    // Fill remaining positions with 0 (empty spaces)
+                    while (writePosition >= 0) {
+                        board[writePosition][col] = 0;
+                        --writePosition;
+                    }
+                }
+            }
+        }
+
+        return board;
+    }
+
+
+

@@ -1,0 +1,35 @@
+/*
+https://leetcode.com/problems/my-calendar-i/
+
+*/
+
+class MyCalendar {
+public:
+    vector<pair<int, int>> lst;
+    MyCalendar() {
+        lst={};
+    }
+    
+    bool book(int startTime, int endTime) {
+        auto it = lower_bound(lst.begin(), lst.end(),make_pair(startTime, endTime));
+
+        // 1. Check overlap with the NEXT interval (if it exists)
+        // Overlap if: newEndTime > nextInterval.startTime
+        if (it != lst.end() && endTime > it->first) {
+            return false;
+        }
+
+        // 2. Check overlap with the PREVIOUS interval (if it exists)
+        // Overlap if: newStartTime < prevInterval.endTime
+        if (it != lst.begin()) {
+            auto prevele = prev(it);
+            if (startTime < prevele->second) {
+                return false;
+            }
+        }
+
+        // No overlaps, insert at the correct sorted position
+        lst.insert(it, {startTime, endTime});
+        return true;
+    }
+};
