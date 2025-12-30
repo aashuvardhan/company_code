@@ -1,0 +1,9 @@
+/*
+https://leetcode.com/problems/design-hit-counter/description/
+
+https://algo.monster/liteproblems/362
+
+
+*/
+
+just know about basic maths and lower_bound and upper_bound in stl
