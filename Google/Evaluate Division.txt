@@ -1,0 +1,51 @@
+/*
+https://leetcode.com/problems/evaluate-division/description/
+
+*/
+
+
+double dfs(unordered_map<string,vector<pair<string,double>>>& umap,string start,string end,double res,unordered_set<string>& st){
+        if(start==end){
+            return res;
+        }
+        if(st.find(start)!=st.end() or umap.find(start)==umap.end()){
+            return -1;
+        }
+        st.insert(start);
+
+        for(auto ele: umap[start]){
+            double temp=dfs(umap,ele.first,end,res*ele.second,st);
+            if(temp!=-1.0){
+                
+                return temp;
+            }
+        }
+        return -1;
+    }
+
+
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        unordered_map<string,vector<pair<string,double>>> umap;
+        vector<double> res;
+
+
+
+        for(int i=0;i<equations.size();i++){
+            umap[equations[i][0]].push_back({equations[i][1],values[i]});
+            umap[equations[i][1]].push_back({equations[i][0],1.0/values[i]});
+        }
+
+        for(int i=0;i<queries.size();i++){
+            string start=queries[i][0];
+            string end=queries[i][1];
+            
+            if(umap.find(start)==umap.end() or umap.find(end)==umap.end()){
+                res.push_back(-1);
+            }else{
+                unordered_set<string> st;
+                res.push_back(dfs(umap,start,end,1,st));
+            }
+
+        }
+        return res;
+    }
