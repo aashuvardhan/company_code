@@ -1,0 +1,91 @@
+/*
+
+https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/description/
+
+*/
+
+
+bool check_overlap(vector<pair<int,int>>& temp,int i,int j){
+        int first_start=temp[i].second;
+        int first_end=first_start+temp[i].first-1;
+
+        int second_start=temp[j].second;
+        int second_end=second_start+temp[j].first-1;
+
+        return ((second_start>=first_start and second_start<=first_end) or (second_end>=first_start and second_end<=first_end));
+                
+    }
+
+
+    int minSumOfLengths(vector<int>& arr, int target) {
+
+        int n=arr.size();
+        //map<sum,last_index>
+        map<int,int> mp;
+        int prefix=0;
+        mp[0]=-1;
+        //vector<pair<size,start>>
+        vector<pair<int,int>> temp;
+        for(int i=0;i<n;i++){
+            prefix+=arr[i];
+            if(mp.find(prefix-target)!=mp.end()){
+                int last_ind=mp[prefix-target];
+                int size=i-last_ind;
+                int start=last_ind+1;
+                temp.push_back({size,start});
+                mp[prefix-target]=i;
+            }
+            mp[prefix]=i;
+        }
+
+        /*
+        removing the overlapping in cases
+        arr=[1,1,1,1,1]
+        target=2
+        */
+        //sorting based on size
+        if(temp.size()<=1){
+            return -1;
+        }
+        sort(temp.begin(),temp.end());
+
+        /*
+        for(auto ele: temp){
+            cout<<ele.first<<"  "<<ele.second<<endl;
+        }
+        */
+
+        /* refinerary process for examples such as
+        arr = [2,2,4,4,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        target = 20
+
+        */
+        n=temp.size();
+        if(n==2){
+            if(check_overlap(temp,0,1)){
+                return -1;
+            }
+            return temp[0].first+temp[1].first;
+        }
+
+
+        int res=INT_MAX;
+        int i=0;
+        cout<<"*************"<<endl;
+        while(i<n-1){
+            int j=i+1;
+            while(j<n){
+                if(check_overlap(temp,i,j)==false){
+                    int val=temp[i].first+temp[j].first;
+                    cout<<i<<"  "<<j<<endl;
+                    res=min(res,val);
+                    break;
+                }
+                j++;
+            }
+            i++;
+        }
+        return res;
+
+
+    }

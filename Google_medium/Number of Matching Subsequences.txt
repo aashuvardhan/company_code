@@ -1,0 +1,45 @@
+/*
+https://leetcode.com/problems/number-of-matching-subsequences/
+
+
+this question is not simple lcs or simple search the sequence type.
+it is a type of bucketing question.
+
+*/
+
+
+
+
+
+
+int numMatchingSubseq(string s, vector<string>& words) {
+        //method of bucketing
+
+
+        // first_char,vector<string,curr_index>
+        unordered_map<char,vector<pair<string,int>>> umap;
+
+        for(auto ele: words){
+            umap[ele[0]].push_back({ele,0});
+        }
+        int count=0;
+        for(auto ch: s){
+            auto curr_bucket=umap[ch];
+            umap.erase(ch);
+
+            for(auto ele: curr_bucket){
+                string strg=ele.first;
+                int index=ele.second;
+                index++;
+                if(index==strg.size()){
+                    count++;
+                }else{
+                    umap[strg[index]].push_back({strg,index});
+                }
+            }
+
+
+        }
+        return count;
+
+    }
