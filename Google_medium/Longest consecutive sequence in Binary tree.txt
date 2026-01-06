@@ -1,0 +1,74 @@
+/*
+
+Given a Binary Tree find the length of the longest path which comprises of nodes with consecutive values in increasing order. Every node is considered as a path of length 1.
+
+
+https://www.geeksforgeeks.org/dsa/longest-consecutive-sequence-binary-tree/
+
+https://leetcode.com/problems/binary-tree-longest-consecutive-sequence/
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct Node{
+    int data;
+    Node* left;
+    Node* right;
+    Node(int x){
+        data=x;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+
+void preorder(Node* root,int& res,int expected,int curr_length){
+    
+    if(root==NULL){
+        return;
+    }
+    
+    if(root->data==expected){
+        curr_length++;
+    }else{
+        curr_length=1;
+    }
+    
+    res=max(res,curr_length);
+    
+    preorder(root->left,res,root->data+1,curr_length);
+    preorder(root->right,res,root->data+1,curr_length);
+    
+    
+}
+
+
+int longestConsecutive(Node* root){
+    int res=0;
+    
+    preorder(root,res,root->data,0);
+    
+    return res;
+    
+    
+}
+
+
+
+
+
+int main()
+{
+    
+    Node* root = new Node(6);
+    root->right = new Node(9);
+    root->right->left = new Node(7);
+    root->right->right = new Node(10);
+    root->right->right->right = new Node(11);
+
+    cout<<longestConsecutive(root);
+    return 0;
+}

@@ -1,0 +1,67 @@
+/*
+
+https://leetcode.com/problems/reorganize-string/description/
+
+Given a string s, rearrange the characters of s so that any two adjacent characters are not the same.
+
+Return any possible rearrangement of s or return  if not possible.
+
+ 
+
+Example 1
+
+Input s = aab
+Output aba
+Example 2
+
+Input s = aaab
+Output 
+ 
+
+
+*/
+
+string reorganizeString(string s) {
+        unordered_map<char,int> umap;
+
+        for(auto ele: s){
+            umap[ele]++;
+        }
+
+        priority_queue<pair<int,char>> pq;
+
+        for(auto ele: umap){
+            pq.push({ele.second,ele.first});
+        }
+
+        string news="";
+        while(pq.size()>1){
+            auto first=pq.top();
+            pq.pop();
+            auto second=pq.top();
+            pq.pop();
+
+            news+=first.second;
+            news+=second.second;
+            cout<<news<<endl;
+
+            if(first.first>1){
+                pq.push({first.first-1,first.second});
+            }
+            if(second.first>1){
+                pq.push({second.first-1,second.second});
+            }
+        }
+
+        //check if the freq of the single element if exist, is what
+        if(pq.size()==1){
+            if(pq.top().first>1){
+                return "";
+            }else{
+                return news+pq.top().second;
+            }
+        }else{
+            return news;
+        }
+        
+    }
