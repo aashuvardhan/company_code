@@ -1,0 +1,128 @@
+/*
+
+https://algo.monster/liteproblems/681
+
+https://leetcode.com/problems/next-closest-time/description/
+
+You are given a time in 24-hour format as a string "HH:MM" (like "19:34" or "23:59"). Your task is to find the next closest time that can be formed by reusing only the digits that appear in the given time. You can use any digit from the original time as many times as you want.
+
+For example:
+
+If the input is "19:34", you can only use the digits 1, 9, 3, and 4 to form the next time
+Each digit can be reused multiple times - you could use 1 four times to make "11:11" if that's valid
+The next closest time means the earliest valid time that comes after the given time. If no such time exists on the same day (within 24 hours), you should wrap around to the next day and find the earliest possible time using the available digits.
+
+Key constraints:
+
+The input time string is always valid (proper format with two digits for hours and minutes)
+The output must be a valid 24-hour time (hours from 00 to 23, minutes from 00 to 59)
+You must use only the digits present in the original time, but can repeat them as needed
+For instance:
+
+Input: "19:34" might return "19:39" (using digits 1, 9, 3, 4)
+Input: "23:59" might return "22:22" (wrapping to next day's earliest time with digits 2, 3, 5, 9)
+
+Insight:-
+--------------
+The key insight is recognizing that we have a very limited set of digits to work with - only the digits that appear in the original time. Since a time string has only 4 digit positions (HH:MM), and we can only use the existing digits, the total number of possible combinations is quite small.
+
+Think about it this way: if the time is "19:34", we can only use digits 1, 9, 3, and 4. Even if we try every possible 4-digit combination using these digits, we'd have at most 4^4 = 256 possibilities to check. This is small enough to examine exhaustively.
+
+The brute force approach becomes elegant here:
+
+Extract all unique digits from the input time (ignoring the colon)
+Generate all possible 4-digit combinations using these digits
+For each combination, check if it forms a valid time (hours < 24, minutes < 60)
+Among all valid times, find the one that's closest to but after our current time
+The tricky part is handling the "next" time. We convert times to minutes since midnight for easy comparison. If the current time is 19:34, that's 19 * 60 + 34 = 1174 minutes. Any valid time with more minutes but less than 1440 (24 hours) comes after it on the same day.
+
+What if no valid time exists after the current time using our digits? This happens when we're near the end of the day with large digits. In this case, we need to wrap around to the next day and find the earliest possible time. The earliest time is simply formed by using the smallest available digit in all four positions.
+
+For example, if the input is "23:59" and we have digits 2, 3, 5, 9, the next time on the same day would need to start with 23: or higher, but 23:92, 23:93, etc. are invalid. So we wrap around to the next day and use the smallest digit 2 to form "22:22".
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+bool is_valid(string s){
+    int hrs=stoi(s.substr(0,2));
+    int mins=stoi(s.substr(2));
+    
+    return (hrs>=0 and hrs<=23 and mins>=0 and mins<=59);
+    
+}
+
+
+void generate_combi(vector<char>& digits,int given_time_in_mins,int& min_diff_in_mins,string curr,string& res){
+    
+    if(curr.size()==4){
+        
+        if(is_valid(curr)==false){
+            return;
+        }
+        
+        
+        int current_time_in_mins=stoi(curr.substr(0,2))*60+stoi(curr.substr(2));
+        
+        if(current_time_in_mins>given_time_in_mins and (current_time_in_mins - given_time_in_mins)<min_diff_in_mins){
+            
+            res=curr.substr(0,2)+":"+curr.substr(2);
+            min_diff_in_mins=current_time_in_mins - given_time_in_mins;
+            cout<<curr<<"  "<<min_diff_in_mins<<endl;
+            
+        }
+        
+        return;
+        
+    }
+    
+    for(auto ele: digits){
+        generate_combi(digits,given_time_in_mins,min_diff_in_mins,curr+ele,res);
+    }
+    
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	//string s="19:34";
+	string s="23:59";
+	
+	
+	char smallest='9';
+	
+	vector<char> digits;
+	
+	for(auto ele: s){
+	    if(ele!=':'){
+	        digits.push_back(ele);
+	        if(ele<smallest){
+	            smallest=ele;
+	        }
+	    }
+	    
+	}
+	
+	int given_time_in_mins=stoi(s.substr(0,2))*60+stoi(s.substr(3));
+	int min_diff_in_mins=INT_MAX;
+	
+	
+	string result="";
+	generate_combi(digits,given_time_in_mins,min_diff_in_mins,"",result);
+	
+	
+	if(result==""){
+	    
+	    result=string(1,smallest)+smallest+":"+smallest+smallest;
+	}
+	cout<<result;
+
+}
+
+

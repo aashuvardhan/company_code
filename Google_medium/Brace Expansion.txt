@@ -1,0 +1,102 @@
+/*
+https://leetcode.com/problems/brace-expansion/description/
+
+
+You are given a string s that represents a list of words with some positions having multiple character options. The string follows these rules:
+
+If a position has only one character option, it appears as a regular character
+If a position has multiple character options, they are enclosed in curly braces and separated by commas, like {a,b,c}
+Your task is to generate all possible words that can be formed by selecting one character from each position's available options.
+
+For example:
+
+If s = "a{b,c}", the first position must be 'a', but the second position can be either 'b' or 'c'. This produces the words ["ab", "ac"]
+If s = "{a,b}c{d,e}", you can form: ["acd", "ace", "bcd", "bce"]
+The solution works by:
+
+Parsing the string: The convert function processes the input string and extracts character options for each position. When it encounters curly braces, it extracts the comma-separated options inside. Regular characters outside braces are treated as single-option positions.
+
+Building combinations: The dfs function performs a depth-first search to generate all possible combinations. It iterates through each position in the items list, tries each available character option at that position, and recursively builds the complete words.
+
+Sorting the result: After generating all possible words, they are sorted lexicographically before being returned.
+
+The algorithm systematically explores all combinations by:
+
+Starting at position 0 with an empty word being built
+For each position, trying each available character option
+Recursively moving to the next position
+When all positions are filled, adding the complete word to the answer list
+Backtracking to try other options
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<vector<char>> converter(string s){
+    
+    vector<vector<char>> res;
+    bool flag=false;
+    for(auto ele: s){
+        if(ele=='{'){
+            flag=true;
+            res.push_back({});
+        }else if(ele==','){
+            continue;
+        }else if(ele=='}'){
+            flag=false;
+        }else if(flag==true){
+            
+            res.back().push_back(ele);
+        }else{
+            vector<char> temp={ele};
+            res.push_back(temp);
+        }
+    }
+    
+    /*
+    for(auto ele: res){
+        for(auto ite: ele){
+            cout<<ite<<"  ";
+        }
+        cout<<endl;
+    }*/
+    return res;
+    
+    
+}
+
+
+
+void dfs(vector<vector<char>>& res,int index,string curr_str,vector<string>& ans){
+    
+    if(index==res.size()){
+        ans.push_back(curr_str);
+        return;
+    }
+    
+    for(auto ele: res[index]){
+        dfs(res,index+1,curr_str+ele,ans);
+    }
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	//string s = "{a,b}c{d,e}";
+	//string s="{a,b,c}c";
+	string s="{a,b,c}def{g,h,i}";
+	
+	vector<vector<char>> res=converter(s);
+	vector<string> ans;
+	
+	dfs(res,0,"",ans);
+	
+	for(auto ele: ans){
+	    cout<<ele<<endl;
+	}
+}
