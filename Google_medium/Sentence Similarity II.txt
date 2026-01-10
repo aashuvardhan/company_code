@@ -1,0 +1,131 @@
+/*
+
+https://leetcode.com/problems/sentence-similarity-ii/description/
+
+https://algo.monster/liteproblems/737
+
+
+You are given two sentences represented as arrays of words and a list of similar word pairs. Your task is to determine if the two sentences are similar based on specific rules.
+
+Input:
+
+sentence1: An array of words representing the first sentence
+sentence2: An array of words representing the second sentence
+similarPairs: An array of word pairs [xi, yi] where each pair indicates that words xi and yi are similar
+Rules for Sentence Similarity:
+
+Same Length Requirement: Both sentences must have the same number of words
+
+Word-by-Word Similarity: For sentences to be similar, each word at position i in sentence1 must be similar to the word at position i in sentence2
+
+Similarity Properties:
+
+A word is always similar to itself
+Similarity is transitive: If word a is similar to b, and b is similar to c, then a is similar to c
+Example:
+
+If we have:
+
+sentence1 = ["I", "am", "happy"]
+sentence2 = ["I", "am", "joyful"]
+similarPairs = [["happy", "joyful"]]
+The sentences would be similar because:
+
+Both have 3 words (same length)
+"I" = "I" (identical)
+"am" = "am" (identical)
+"happy" is similar to "joyful" (from similarPairs)
+The solution uses a Union-Find (Disjoint Set Union) data structure to efficiently group words that are similar through transitive relationships. It first builds connected components of similar words, then checks if corresponding words in both sentences belong to the same component.
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int find_parent(unordered_map<string,int> umap,string str){
+    if(umap.find(str)==umap.end()){
+        return -1;
+    }
+    return umap[str];
+}
+
+
+
+void unions(unordered_map<string,int>& umap,string str1,string str2){
+    
+    int p1=find_parent(umap,str1);
+    int p2=find_parent(umap,str2);
+    
+    if(p1==p2){
+        return;
+    }else{
+        if(p1<p2){
+            umap[str2]=umap[str1];
+        }else{
+            umap[str1]=umap[str2];
+        }
+        
+    }
+}
+
+
+
+int main() {
+	// your code goes here
+	vector<string> sentence1 = {"great", "acting", "skills","fun"};
+    vector<string> sentence2 = {"fine", "drama", "talent","fine"};
+	vector<vector<string>> similarPairs = {{"great", "fine"}, {"acting", "drama"}, {"skills", "talent"},{"fun","great"}};
+	
+	if(sentence1.size()!=sentence2.size()){
+	    cout<<false<<endl;
+	}else{
+	    unordered_map<string,int> umap;
+    	int index=0;
+    	
+    	for(auto ele: similarPairs){
+    	    for(auto ite: ele){
+    	        if(umap.find(ite)==umap.end()){
+    	            umap[ite]=index;
+    	            index++;
+    	        }
+    	        
+    	    }
+	    }
+	    
+	    for(auto ele: similarPairs){
+	        unions(umap,ele[0],ele[1]);
+	    }
+	    
+	    bool flag=true;
+	    
+	    for(int i=0;i<sentence1.size();i++){
+	        string str1=sentence1[i];
+	        string str2=sentence2[i];
+	        
+	        if(str1==str2){
+	            continue;
+	        }else{
+	            if(find_parent(umap,str1)==find_parent(umap,str2)){
+	                continue;
+	            }else{
+	                flag=false;
+	                cout<<"No same"<<endl;
+	                break;
+	            }
+	        }
+	    }
+	    if(flag==true){
+	        cout<<"yes same"<<endl;
+	    }
+	}
+	
+	
+	
+	
+	
+	
+
+}
+
+
