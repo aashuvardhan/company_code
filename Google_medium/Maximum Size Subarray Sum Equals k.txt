@@ -1,0 +1,46 @@
+/*
+https://leetcode.com/problems/maximum-size-subarray-sum-equals-k/description/
+
+https://algo.monster/liteproblems/325
+
+You are given an integer array nums and an integer k. Your task is to find the maximum length of a contiguous subarray whose elements sum to exactly k. If no such subarray exists, return 0.
+
+
+If nums = [1, -1, 5, -2, 3] and k = 3, the subarray [1, -1, 5, -2] sums to 3 and has length 4, which would be the answer.
+If nums = [2, 3, 4] and k = 10, no subarray sums to 10, so the answer would be 0.
+
+
+
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	vector<int> nums = {1, -1, 5, -2, 3};
+	int n=nums.size();
+	int k = 3;
+	
+	int prefix=0;
+	unordered_map<int,int> umap;
+	umap[0]=-1;
+	
+	int res=INT_MIN;
+	
+	
+	for(int i=0;i<n;i++){
+	    prefix+=nums[i];
+	    
+	    if(umap.find(prefix-k)!=umap.end()){
+	        res=max(res,i-umap[prefix-k]);
+	    }
+	    if(umap.find(prefix)==umap.end()){
+	        umap[prefix]=i;
+	    }
+	}
+	cout<<res;
+
+}
