@@ -1,0 +1,92 @@
+/*
+Palindrome Permutation II
+
+
+https://algo.monster/liteproblems/267
+
+Given a string s, you need to find all possible palindromic permutations of the string without duplicates. A palindromic permutation is a rearrangement of the characters that forms a palindrome (reads the same forwards and backwards).
+
+The task requires you to:
+
+Check if the given string can form any palindrome permutation
+If yes, generate all unique palindromic permutations
+If no palindromic permutation is possible, return an empty list
+For a string to form a palindrome:
+
+If the length is even, every character must appear an even number of times
+If the length is odd, exactly one character can appear an odd number of times (this character would be in the middle)
+For example:
+
+Input: "aab" → Output: ["aba"] (only one palindromic permutation possible)
+Input: "abc" → Output: [] (no palindromic permutation possible since all three characters appear once)
+Input: "aabb" → Output: ["abba", "baab"] (multiple palindromic permutations possible)
+The solution uses a depth-first search approach to build palindromes by:
+
+First counting character frequencies to check if a palindrome is possible
+Identifying any character that appears an odd number of times (which would be the middle character)
+Recursively building the palindrome from the center outward by adding matching characters on both sides
+
+
+*/
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void create_palindrome(vector<int>& count,string str,vector<string>& ans,int& n){
+    if(str.size()==n){
+        cout<<str<<endl;
+        ans.push_back(str);
+        return;
+    }
+    
+    for(int i=0;i<26;i++){
+        if(count[i]>=2){
+            char ch='a'+i;
+            
+            count[i]-=2;
+            create_palindrome(count,ch+str+ch,ans,n);
+            count[i]+=2;
+        }
+    }
+}
+
+
+int main() {
+	// your code goes here
+	string s="aabbecc";
+	int n=s.size();
+	
+	//step1 create a counter array 
+	
+	vector<int> count(26,0);
+	
+	for(auto ele: s){
+	    int ch=ele-'a';
+	    count[ch]++;
+	}
+	
+	string mid="";
+	int cnt=0;
+	for(int i=0;i<26;i++){
+	    if(count[i]%2!=0){
+	        mid+='a'+i;
+	        count[i]--;
+	        cnt++;
+	    }
+	}
+	if(cnt>=2){
+	    cout<<"Not a palindrome";
+	}else{
+	    vector<string> ans;
+	    create_palindrome(count,mid,ans,n);
+	    
+	    
+	}
+
+}
