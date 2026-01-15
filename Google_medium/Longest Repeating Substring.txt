@@ -1,0 +1,49 @@
+/*
+
+https://algo.monster/liteproblems/1062
+
+Given a string s, you need to find the length of the longest substring that appears at least twice in the string. The repeating substrings can overlap but must start at different positions.
+
+For example:
+
+In the string "abcabc", the substring "abc" appears twice (at positions 0 and 3), so the answer would be 3
+In the string "aabcaaba", the substring "aab" appears twice (at positions 0 and 5), so the answer would be 3
+In the string "abbaba", the substring "ab" appears multiple times, and "ba" also appears multiple times, but the longest repeating substring is "ab" or "ba" with length 2
+If no substring repeats (like in "abcd"), return 0
+The key insight is that we're looking for the longest common substring between the string and itself, but ensuring the two occurrences start at different positions. The solution uses dynamic programming where f[i][j] represents the length of the longest common substring ending at positions i and j where i > j. When characters at positions i and j match (s[i] == s[j]), we extend the previous matching substring length by 1. The condition i > j ensures we're comparing different positions in the string.
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	string str="banana";
+	int res=INT_MIN;
+	int n=str.size();
+	
+	vector<vector<int>> dp(n,vector<int>(n)); 
+	
+	for(int i=1;i<str.size();i++){
+	    for(int j=0;j<i;j++){
+	        
+	        if(str[i]==str[j]){
+	            
+	            dp[i][j]=1 + ( j>0 ? dp[i-1][j-1] : 0 );
+	            res=max(res,dp[i][j]);
+	        }
+	    }
+	}
+	cout<<res<<endl;
+	
+	/*
+	for(auto ele: dp){
+	    for(auto ite: ele){
+	        cout<<ite<<"  ";
+	    }
+	    cout<<endl;
+	}
+	*/
+
+}
