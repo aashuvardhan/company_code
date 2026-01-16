@@ -1,0 +1,49 @@
+/*
+
+https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/description/
+
+this question is very strategic oriented in which we make the directed edge to undirected edge
+and while making so we take care of the fact that if an edge is moving out then we put negative to it
+and if it is reaching that node then add positive to it.
+
+this ensures that how to reach the target node 
+
+*/
+
+
+int minReorder(int n, vector<vector<int>>& connections) {
+        unordered_map<int,vector<int>> umap;
+        vector<bool> visited(n+1,false); 
+
+        for(auto ele: connections){
+            umap[ele[0]+1].push_back(ele[1]+1);
+            umap[ele[1]+1].push_back(-1*(ele[0]+1));
+
+        }
+
+        queue<int> q;
+        q.push(1);
+        int count=0;
+
+        while(q.size()!=0){
+            int curr=q.front();
+            q.pop();
+            visited[curr]=true;
+
+            for(auto adj: umap[curr]){
+                if(visited[abs(adj)]==false){
+                    if(adj<0){
+                        q.push(abs(adj));
+                    }else{
+                        q.push(adj);
+                        count++;
+                    }
+                }
+            }
+            
+        }
+        return count;
+
+
+
+    }
