@@ -1,0 +1,138 @@
+/*
+https://algo.monster/liteproblems/308
+
+
+This problem asks you to implement a data structure that efficiently handles a 2D matrix with two main operations:
+
+Update Operation: Change the value of a specific cell in the matrix at position (row, col) to a new value val.
+
+Range Sum Query: Calculate the sum of all elements within a rectangular region defined by its upper-left corner (row1, col1) and lower-right corner (row2, col2).
+
+You need to implement a NumMatrix class with three methods:
+
+NumMatrix(matrix): Constructor that initializes the data structure with a given 2D integer matrix.
+update(row, col, val): Updates the value at matrix[row][col] to val.
+sumRegion(row1, col1, row2, col2): Returns the sum of all elements in the rectangle from (row1, col1) to (row2, col2) inclusive.
+The challenge is to design this data structure so that both update and sum operations are performed efficiently, especially when there are many queries. A naive approach of updating the matrix directly and calculating sums by iterating through the rectangle would work but may be too slow for large matrices with frequent operations.
+
+The solution uses a Binary Indexed Tree (also known as Fenwick Tree) for each row of the matrix. This allows for efficient updates in O(log n) time and prefix sum queries in O(log n) time per row. For a range sum query spanning multiple rows, the solution queries each row's Binary Indexed Tree and sums the results, achieving O(m * log n) time complexity where m is the number of rows in the query range and n is the number of columns.
+
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void update(vector<int>& tree,int low,int high,int tree_index,int pos,int new_val){
+    
+    if(pos<low or pos>high){
+        return;
+    }
+    
+    if(low==high){
+        tree[tree_index]=new_val;
+        return;
+    }else{
+        int mid=(low+high)/2;
+        if(pos<=mid){
+            update(tree,low,mid,2*tree_index+1,pos,new_val);
+        }else{
+            update(tree,mid+1,high,2*tree_index+2,pos,new_val);
+        }
+        
+        tree[tree_index]=tree[2*tree_index+1]+tree[2*tree_index+2];
+    }
+    
+}
+
+
+int range_query(vector<int>& tree,int low,int high,int tree_index,int left,int right){
+    
+    if(left>high or right<low){
+        return 0;
+    }
+    
+    if(left<=low and right>=high){
+        return tree[tree_index];
+    }else{
+        int mid=(low+high)/2;
+        
+        return range_query(tree,low,mid,2*tree_index+1,left,right)+
+                range_query(tree,mid+1,high,2*tree_index+2,left,right);
+    }
+}
+
+
+
+
+int construct(vector<int>& arr,vector<int>& tree,int low,int high,int tree_index){
+    
+    if(low==high){
+        tree[tree_index]=arr[low];
+        return arr[low];
+    }
+    
+    int mid=(low+high)/2;
+    
+    int left=construct(arr,tree,low,mid,2*tree_index+1);
+    int right=construct(arr,tree,mid+1,high,2*tree_index+2);
+    
+    tree[tree_index]=left+right;
+    return tree[tree_index];
+    
+    
+}
+
+
+int main() {
+	// your code goes here
+	
+	vector<vector<int>> mat={{1, 2, 3},{4, 5, 6},{7, 8, 9}};
+	
+	int row=mat.size();
+	int col=mat[0].size();
+	
+	vector<vector<int>> tree(row,vector<int>(col*4,0));
+	
+	//constructing the row wise segment tree for each row
+	//each row will be a segment tree
+	
+	for(int i=0;i<row;i++){
+	    construct(mat[i],tree[i],0,col-1,0);
+	}
+	
+	
+	//matrix query
+	vector<int> query={0, 1, 2, 2};
+	int row1=query[0],col1=query[1],row2=query[2],col2=query[3];
+	
+	int sum=0;
+	for(int i=row1;i<=row2;i++){
+	    sum+=range_query(tree[i],0,col-1,0,col1,col2);
+	}
+	
+	cout<<sum<<endl;
+	
+	
+	//updating
+	int up_row=1;
+	int up_col=1;
+	int new_val=10;
+	
+	update(tree[up_row],0,col-1,0,up_col,new_val);
+	
+	
+	//re-quering the range_query
+	sum=0;
+	for(int i=row1;i<=row2;i++){
+	    sum+=range_query(tree[i],0,col-1,0,col1,col2);
+	}
+	
+	cout<<sum<<endl;
+	
+	
+	
+	
+
+}
