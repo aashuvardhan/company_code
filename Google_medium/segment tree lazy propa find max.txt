@@ -1,0 +1,129 @@
+/*
+
+https://www.geeksforgeeks.org/dsa/lazy-propagation-in-segment-tree-set-2/
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+
+
+void range_update(vector<int>& tree,int tree_index,int low,int high,int q_start,int q_end,int val,vector<int>& lazy){
+    
+    
+    //step1:- lazy check
+    if(lazy[tree_index]!=0){
+        tree[tree_index]+=lazy[tree_index];
+        
+        if(low!=high){
+            lazy[2*tree_index+1]+=lazy[tree_index];
+            lazy[2*tree_index+2]+=lazy[tree_index];
+        }
+    }
+    
+    //step2:- validity check
+    if(low>high or q_start>high or q_end<low){
+        return;
+    }
+    
+    //step3: - perfect fit check
+    
+    if(low>=q_start and high<=q_end){
+        tree[tree_index]+=val;
+        
+        if(low!=high){
+            lazy[2*tree_index+1]+=val;
+            lazy[2*tree_index+2]+=val;
+        }
+        
+        return;
+        
+    }
+    
+    //step4:- non perfection check
+    int mid=(low+high)/2;
+    range_update(tree,2*tree_index+1,low,mid,q_start,q_end,val,lazy);
+    range_update(tree,2*tree_index+2,mid+1,high,q_start,q_end,val,lazy);
+    
+    tree[tree_index]=max(tree[2*tree_index+1],tree[2*tree_index+2]);
+    
+    
+    
+}
+
+
+
+int range_query(vector<int>& tree,int tree_index,int low,int high,int q_start,int q_end,vector<int>& lazy){
+    
+    
+    //step1 : lazy check
+    if(lazy[tree_index]!=0){
+        tree[tree_index]+=lazy[tree_index];
+        
+        if(low!=high){
+            lazy[2*tree_index+1]+=lazy[tree_index];
+            lazy[2*tree_index+2]+=lazy[tree_index];
+        }
+    }
+    
+    //step2: validity check 
+    if(low>high or q_start>high or q_end<low){
+        return 0;
+    }
+    
+    //step3:- perfect fit check
+    if(low>=q_start and high<=q_end){
+        return tree[tree_index];
+    }
+    
+    //step4:- non perfect fit passes
+    int mid=(low+high)/2;
+    return max(range_query(tree,2*tree_index+1,low,mid,q_start,q_end,lazy),
+                range_query(tree,2*tree_index+2,mid+1,high,q_start,q_end,lazy));
+    
+    
+    
+}
+
+
+int construct(vector<int>& arr,vector<int>& tree,int tree_index,int low,int high){
+    
+    if(low==high){
+        tree[tree_index]=arr[low];
+        return arr[low];
+    }
+    
+    int mid=(low+high)/2;
+    int left=construct(arr,tree,2*tree_index+1,low,mid);
+    int right=construct(arr,tree,2*tree_index+2,mid+1,high);
+    
+    tree[tree_index]=left+right;
+    return tree[tree_index];
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	
+	vector<int> arr={1, 2, 3, 4, 5} ;
+	int n=arr.size();
+	
+	vector<int> tree(4*n);
+	vector<int> lazy(4*n,0);
+	
+	construct(arr,tree,0,0,n-1);
+	
+	cout<<range_query(tree,0,0,n-1,1,3,lazy)<<endl;
+	
+	range_update(tree,0,0,n-1,0,4,15,lazy);
+	
+	cout<<range_query(tree,0,0,n-1,1,3,lazy)<<endl;
+	
+	
+
+}
