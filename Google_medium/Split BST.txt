@@ -1,0 +1,92 @@
+/*
+
+https://algo.monster/liteproblems/776
+
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Treenode{
+    int data;
+    Treenode* left;
+    Treenode* right;
+    Treenode(int x){
+        data=x;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+void inorder(Treenode* root){
+    
+    if(root==NULL){
+        return;
+    }
+    inorder(root->left);
+    cout<<root->data<<"  ";
+    inorder(root->right);
+}
+
+
+vector<Treenode* > bst_split(Treenode* root,int target){
+    if(root==NULL){
+        return {NULL,NULL};
+    }
+    
+    if(root->data<=target){
+        
+        vector<Treenode* > split=bst_split(root->right,target);
+        //this vector will contain the left tree and the right tree after the split
+        
+        //but there will be some elements in the right side which are less equal the target
+        
+        // we merge them to the left part of the split.
+        root->right=split[0];
+        
+        split[0]=root;
+        
+        return split;
+        
+    }else{
+        vector<Treenode* > split=bst_split(root->left,target);
+        
+        root->left=split[1];
+        
+        split[1]=root;
+        
+        return split;
+    }
+    
+}
+
+
+
+
+int main() {
+	// your code goes here
+	Treenode* root=new Treenode(8);
+	root->left=new Treenode(4);
+	root->left->left=new Treenode(3);
+	root->left->left->left=new Treenode(2);
+	root->left->right=new Treenode(5);
+	root->left->right->right=new Treenode(6);
+	
+	
+	root->right=new Treenode(11);
+	root->right->right=new Treenode(12);
+	root->right->left=new Treenode(10);
+	
+	inorder(root);
+	cout<<endl;
+	
+	vector<Treenode*> left_right_split=bst_split(root,5);
+	
+	inorder(left_right_split[0]);
+	cout<<endl;
+	
+	inorder(left_right_split[1]);
+	cout<<endl;
+
+}
