@@ -1,0 +1,70 @@
+/*
+
+https://leetcode.com/problems/valid-sudoku/description/
+
+
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+Note:
+
+A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+Only the filled cells need to be validated according to the mentioned rules.
+ 
+
+*/
+
+
+bool isValidSudoku(vector<vector<char>>& board) {
+        
+        
+        //no rep in columns and row wise
+        for(int i=0;i<9;i++){
+            unordered_set<int> col;
+            unordered_set<int> row;
+            unordered_set<int> sub_mat;
+            
+            for(int j=0;j<9;j++){
+                int val=board[i][j];
+                if(val!='.'){
+                    if(col.find(val)==col.end()){
+                        col.insert(val);
+                    }else{
+                        return false;
+                    }
+                }
+                
+
+                
+                int val2=board[j][i];
+                if(val2!='.'){
+                    if(row.find(val2)==row.end()){
+                        row.insert(val2);
+                    }else{
+                        return false;
+                    }
+                }
+                
+
+                
+                int sub_row=3*(i/3)+(j/3);
+                int sub_col=3*(i%3)+(j%3);
+                int val3=board[sub_row][sub_col];
+                
+                if(val3!='.'){
+                    //cout<<val3-'0'<<"  ";
+                    if(sub_mat.find(val3)==sub_mat.end()){
+                        sub_mat.insert(val3);
+                    }else{
+                        return false;
+                    }
+                }
+                
+            }
+        }
+
+        return true;
+
+    }
