@@ -1,0 +1,86 @@
+/*
+
+https://neetcode.io/problems/find-leaves-of-binary-tree/question
+
+Given the root of a binary tree, collect a tree's nodes as if you were doing this:
+
+Collect all the leaf nodes.
+Remove all the leaf nodes.
+Repeat until the tree is empty.
+
+Input: root = [1,2,3,4,5]
+
+Output: [[4,5,3],[2],[1]]
+
+Explanation:
+[[3,5,4],[2],[1]] and [[3,4,5],[2],[1]] are also considered correct answers since per each level it does not matter the order on which elements are returned.
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Treenode{
+    int data;
+    Treenode* left;
+    Treenode* right;
+    
+    Treenode(int val){
+        data=val;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+
+int postorder_using_height(Treenode* root,unordered_map<int,vector<int>>& umap,int& maxi){
+    if(root==NULL){
+        return -1;
+    }
+    int left=postorder_using_height(root->left,umap,maxi);
+    int right=postorder_using_height(root->right,umap,maxi);
+    
+    int height=1+max(left,right);
+    
+    //just to get the maximum value for the final iter over the umap
+    maxi=max(maxi,height);
+    
+    umap[height].push_back(root->data);
+    
+    return height;
+}
+
+
+
+int main() {
+	// your code goes here
+	
+	Treenode* root=new Treenode(1);
+	root->left=new Treenode(2);
+	root->right=new Treenode(3);
+	root->left->left=new Treenode(4);
+	root->left->right=new Treenode(5);
+	
+	root->right=new Treenode(3);
+	
+	unordered_map<int,vector<int>> umap;
+	int maxi=0;
+	
+	postorder_using_height(root,umap,maxi);
+	
+	vector<vector<int>> res;
+	
+	for(int i=0;i<=maxi;i++){
+	    res.push_back(umap[i]);
+	}
+	
+	//printing
+	for(auto ele: res){
+	    for(auto ite: ele){
+	        cout<<ite<<"  ";
+	    }
+	    cout<<endl;
+	}
+
+}
