@@ -1,0 +1,83 @@
+/*
+
+https://leetcode.com/problems/check-completeness-of-a-binary-tree/description/
+
+
+Given the root of a binary tree, determine if it is a complete binary tree.
+
+In a complete binary tree, every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,2,3,4,5,6]
+Output: true
+Explanation: Every level before the last is full (ie. levels with node-values {1} and {2, 3}), and all nodes in the last level ({4, 5, 6}) are as far left as possible.
+Example 2:
+
+
+Input: root = [1,2,3,4,5,null,7]
+Output: false
+Explanation: The node with value 7 isn't as far left as possible.
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 100].
+1 <= Node.val <= 1000
+*/
+
+
+bool isCompleteTree(TreeNode* root) {
+
+        queue<TreeNode* > q;
+        int lvlcnt=0;
+        q.push(root);
+        bool last_flag=false;
+        // this flag is used to ensure that the last level is marked and there is no one coming after wards.
+
+        while(q.size()!=0){
+            if(last_flag==true){
+                return false;
+            }
+            int cnt=q.size();
+            if(cnt!=pow(2,lvlcnt)){
+                last_flag=true;
+            }
+            bool side_stop=false;
+	    // this is used to make sure that while traversing the row wise in level order then there is no break(NULL) in betw.
+
+            for(int i=0;i<cnt;i++){
+                TreeNode* curr=q.front();
+                q.pop();
+                if(side_stop==true and (curr->left!=NULL or curr->right!=NULL)){
+                    return false;
+                }
+                
+                if(curr->left!=NULL){
+                    q.push(curr->left);
+                }else{
+                    side_stop=true;
+                }
+                if(side_stop==false){
+                    if(curr->right!=NULL){
+                        q.push(curr->right);
+                    }else{
+                        side_stop=true;
+                    }
+                }else{
+                    if(curr->right!=NULL){
+                        return false;
+                    }
+                }
+            }
+            lvlcnt++;
+
+        }
+        return true;
+
+
+        
+    }

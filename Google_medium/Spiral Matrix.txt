@@ -1,0 +1,108 @@
+/*
+
+https://leetcode.com/problems/spiral-matrix/description/
+
+
+
+
+iven an m x n matrix, return all elements of the matrix in spiral order.
+
+ 
+
+Example 1
+
+
+Input matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output [1,2,3,6,9,8,7,4,5]
+Example 2
+
+
+Input matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+Output [1,2,3,4,8,12,11,10,9,5,6,7]
+ 
+
+Constraints
+
+m == matrix.length
+n == matrix[i].length
+1 = m, n = 10
+-100 = matrix[i][j] = 100
+
+*/
+
+
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+
+        int rows=matrix.size();
+        int cols=matrix[0].size();
+
+        int boundary_left=-1;
+        int boundary_right=cols;
+        int boundary_up=0;
+        int boundary_down=rows;
+
+        vector<int> res;
+        //commands move right, down, left, up
+        vector<int> initiator={0,1,2,3};
+        bool flag=true;
+        int ind=0;
+        int i=0,j=0;
+        while(flag){
+            bool flagger=false;
+            ind=ind%4;
+            if(initiator[ind]==0){
+                //move right
+                if(j<boundary_right){
+                    flagger=true;
+                }
+                while(j<boundary_right){
+                    res.push_back(matrix[i][j]);
+                    j++;
+                }
+                i++;
+                j--;
+                boundary_right--;
+            }else if(initiator[ind]==1){
+                //move down
+                if(i<boundary_down){
+                    flagger=true;
+                }
+                while(i<boundary_down){
+                    res.push_back(matrix[i][j]);
+                    i++;
+                }
+                i--;
+                j--;
+                boundary_down--;
+            }else if(initiator[ind]==2){
+                //move left
+                if(j>boundary_left){
+                    flagger=true;
+                }
+                while(j>boundary_left){
+                    res.push_back(matrix[i][j]);
+                    j--;
+                }
+                i--;
+                j++;
+                boundary_left++;
+            }else{
+                //move up
+                if(i>boundary_up){
+                    flagger=true;
+                }
+                while(i>boundary_up){
+                    res.push_back(matrix[i][j]);
+                    i--;
+                }
+                i++;
+                j++;
+                boundary_up++;
+            }
+            if(flagger==false){
+                flag=false;
+            }
+            ind++;
+        }
+        return res;
+    }
