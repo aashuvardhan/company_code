@@ -1,0 +1,91 @@
+/*
+
+https://www.geeksforgeeks.org/dsa/find-the-maximum-subarray-xor-in-a-given-array/
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct TrieNode{
+    TrieNode* child[2];
+    int val;
+    
+    TrieNode(){
+        child[0]=child[1]=NULL;
+        val=0;
+    }
+};
+
+
+void insert(TrieNode* root,int prefix_xor){
+    
+    TrieNode* temp=root;
+    
+    for(int i=31;i>=0;i--){
+        
+        int ind=(prefix_xor>>i) & 1;
+        if(temp->child[ind]==NULL){
+            temp->child[ind]=new TrieNode();
+        }
+        temp=temp->child[ind];
+        
+    }
+    temp->val=prefix_xor;
+    
+    
+}
+
+
+
+int query(TrieNode* root,int prefix_xor){
+    
+    TrieNode* temp=root;
+    
+    for(int i=31;i>=0;i--){
+        
+        int ind=(prefix_xor>>i) & 1;
+        if(temp->child[1-ind]!=NULL){
+            temp=temp->child[1-ind];
+        }else if(temp->child[ind]!=NULL){
+            temp=temp->child[ind];
+        }
+        
+    }
+    return (temp->val)^prefix_xor;
+}
+
+
+
+
+int main() {
+	// your code goes here
+	vector<int> arr={8, 1, 2, 12, 7, 6};
+	
+	int prefix_xor=0;
+	TrieNode* root=new TrieNode();
+	
+	insert(root,0);
+	int res=INT_MIN;
+	
+	for(auto ele: arr){
+	    
+	    prefix_xor=prefix_xor^ele;
+	    
+	    insert(root,prefix_xor);
+	    
+	    //we are again sending this prefix_xor because
+	    //we are trying to find the maximum possible xor
+	    //till this current found xored element
+	    //as we are storing only the prefix_xor only in our Trie
+	    //"The key is that you aren't searching for the same value to match it; you are using the Trie to find a different previous prefix XOR that, when XORed with your current one, produces the largest possible number."
+	    //"Hey, out of all the PrefixXOR values we have seen and stored so far, which one is the perfect partner for my current pre_xor to make the biggest result?"
+	    
+	    res=max(res,query(root,prefix_xor));
+	    
+	    
+	}
+	
+	cout<<res;
+}
