@@ -1,0 +1,50 @@
+/*
+
+https://leetcode.com/problems/generate-parentheses/description/
+
+
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+ 
+
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+ 
+
+Constraints:
+
+1 <= n <= 8
+
+*/
+
+
+void generate(vector<string>& res,int opened,int closed,int n,string curr){
+        if(curr.size()==2*n){
+            res.push_back(curr);
+            return;
+        }
+
+        if(opened<n){
+            generate(res,opened+1,closed,n,curr+"(");
+        }
+        if(closed<opened){
+            generate(res,opened,closed+1,n,curr+")");
+        }
+    }
+
+
+    vector<string> generateParenthesis(int n) {
+        int opened=0;
+        int closed=0;
+        vector<string> res;
+        
+        generate(res,opened,closed,n,"");
+        return res;
+        
+    }

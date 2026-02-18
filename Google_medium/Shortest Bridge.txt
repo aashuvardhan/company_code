@@ -1,0 +1,113 @@
+/*
+
+https://leetcode.com/problems/shortest-bridge/description/
+
+
+
+You are given an n x n binary matrix grid where 1 represents land and 0 represents water.
+
+An island is a 4-directionally connected group of 1's not connected to any other 1's. There are exactly two islands in grid.
+
+You may change 0's to 1's to connect the two islands to form one island.
+
+Return the smallest number of 0's you must flip to connect the two islands.
+
+ 
+
+Example 1:
+
+Input: grid = [[0,1],[1,0]]
+Output: 1
+Example 2:
+
+Input: grid = [[0,1,0],[0,0,0],[0,0,1]]
+Output: 2
+Example 3:
+
+Input: grid = [[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
+Output: 1
+ 
+
+Constraints:
+
+n == grid.length == grid[i].length
+2 <= n <= 100
+grid[i][j] is either 0 or 1.
+There are exactly two islands in grid.
+
+
+
+
+*/
+
+void dfs(vector<vector<int>>& grid,int x,int y,int n,vector<pair<int,int>>& bfs_queue){
+
+        grid[x][y]=2;
+        bfs_queue.push_back({x,y});
+
+        for(auto adj: vector<pair<int,int>>{{x+1,y},{x-1,y},{x,y+1},{x,y-1}}){
+            int cur_x=adj.first,cur_y=adj.second;
+            if(cur_x>=0 and cur_x<n and cur_y>=0 and cur_y<n and grid[cur_x][cur_y]==1){
+                dfs(grid,cur_x,cur_y,n,bfs_queue);
+            }
+        }
+
+
+    }
+
+
+    int shortestBridge(vector<vector<int>>& grid) {
+        //amazing use of first DFS and then BFS
+
+        int n=grid.size();
+        int first_x=-1,first_y=-1;
+
+        vector<pair<int,int>> bfs_queue;
+
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1){
+                    first_x=i;
+                    first_y=j;
+                    break;
+                }
+            }
+            if(first_x!=-1){
+                break;
+            }
+        }
+
+        dfs(grid,first_x,first_y,n,bfs_queue);
+
+        //the bfs magic is to take all the visited 1's and increment them all by 1.
+        //ultimately we have someone reaching first.
+
+        int distance=0;
+        while(bfs_queue.size()!=0){
+            vector<pair<int,int>> new_bfs;
+
+            for(auto ele: bfs_queue){
+                //pick a position and move to all its surrounding.
+                int x=ele.first;
+                int y=ele.second;
+
+                for(auto adj: vector<pair<int,int>>{{x+1,y},{x-1,y},{x,y+1},{x,y-1}}){
+                    int cur_x=adj.first;
+                    int cur_y=adj.second;
+                    if(cur_x>=0 and cur_x<n and cur_y>=0 and cur_y<n){
+                        if(grid[cur_x][cur_y]==1){
+                            return distance;
+                        }else if(grid[cur_x][cur_y]==0){
+                            new_bfs.push_back({cur_x,cur_y});
+                            grid[cur_x][cur_y]=-1;
+                        }
+                    }
+                }
+            }
+            bfs_queue.swap(new_bfs);
+            distance++;
+        }
+        return distance;
+        
+    }
