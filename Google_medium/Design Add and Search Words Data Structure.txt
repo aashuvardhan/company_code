@@ -1,0 +1,129 @@
+https://leetcode.com/problems/design-add-and-search-words-data-structure/description/
+
+/*
+
+Design a data structure that supports adding new words and finding if a string matches any previously added string.
+
+Implement the WordDictionary class:
+
+WordDictionary() Initializes the object.
+void addWord(word) Adds word to the data structure, it can be matched later.
+bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise. word may contain dots '.' where dots can be matched with any letter.
+ 
+
+Example:
+
+Input
+["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
+[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
+Output
+[null,null,null,null,false,true,true,true]
+
+Explanation
+WordDictionary wordDictionary = new WordDictionary();
+wordDictionary.addWord("bad");
+wordDictionary.addWord("dad");
+wordDictionary.addWord("mad");
+wordDictionary.search("pad"); // return False
+wordDictionary.search("bad"); // return True
+wordDictionary.search(".ad"); // return True
+wordDictionary.search("b.."); // return True
+ 
+
+Constraints:
+
+1 <= word.length <= 25
+word in addWord consists of lowercase English letters.
+word in search consist of '.' or lowercase English letters.
+There will be at most 2 dots in word for search queries.
+At most 104 calls will be made to addWord and search.
+
+*/
+
+
+class WordDictionary {
+public:
+
+    struct TrieNode{
+        vector<TrieNode*> children;
+        bool isEnd;
+        TrieNode(){
+            children=vector<TrieNode*>(26,NULL);
+            isEnd=false;
+        }
+    };
+
+    TrieNode* root;
+
+    WordDictionary() {
+        root=new TrieNode();
+    }
+    
+    void addWord(string word) {
+
+        TrieNode* curr=root;
+        for(auto ele: word){
+
+            int index=ele-'a';
+            if(curr->children[index]==NULL){
+                curr->children[index]=new TrieNode();
+            }
+            curr=curr->children[index];
+
+        }
+        curr->isEnd=true;
+        
+    }
+
+    bool recursion_search(string word,int str_ind,TrieNode* curr_dup){
+        for(int j=str_ind;j<word.size();j++){
+            char ele=word[j];
+            if(ele=='.'){
+                for(int i=0;i<26;i++){
+                    if(curr_dup->children[i]!=NULL){
+                        if(recursion_search(word,j+1,curr_dup->children[i])){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }else{
+                int index=ele-'a';
+                if(curr_dup->children[index]==NULL){
+                    return false;
+                }else{
+                    curr_dup=curr_dup->children[index];
+                }
+            }
+        }
+        return curr_dup->isEnd;
+    }
+    
+    bool search(string word) {
+
+        //normal_search
+        TrieNode* curr=root;
+        for(int j=0;j<word.size();j++){
+            char ele=word[j];
+            if(ele=='.'){
+                for(int i=0;i<26;i++){
+                    if(curr->children[i]!=NULL){
+                        if(recursion_search(word,j+1,curr->children[i])){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }else{
+                int index=ele-'a';
+                if(curr->children[index]==NULL){
+                    return false;
+                }else{
+                    curr=curr->children[index];
+                }
+            }
+        }
+        return curr->isEnd;
+        
+    }
+};

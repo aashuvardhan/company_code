@@ -1,0 +1,91 @@
+https://leetcode.com/problems/number-of-provinces/submissions/1961054242/
+
+
+/*
+
+
+There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c.
+
+A province is a group of directly or indirectly connected cities and no other cities outside of the group.
+
+You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are directly connected, and isConnected[i][j] = 0 otherwise.
+
+Return the total number of provinces.
+
+ 
+
+Example 1:
+
+
+Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+Output: 2
+Example 2:
+
+
+Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+Output: 3
+ 
+
+Constraints:
+
+1 <= n <= 200
+n == isConnected.length
+n == isConnected[i].length
+isConnected[i][j] is 1 or 0.
+isConnected[i][i] == 1
+isConnected[i][j] == isConnected[j][i]
+*/
+
+int find(vector<int>& parent,int x){
+        if(parent[x]==x){
+            return x;
+        }else{
+            return find(parent,parent[x]);
+        }
+
+    }
+
+    void unions(vector<int>& parent,vector<int>& rank,int x,int y){
+        int x_rep=find(parent,x);
+        int y_rep=find(parent,y);
+
+        if(x_rep==y_rep){
+            return;
+        }
+        if(rank[x_rep]==rank[y_rep]){
+            parent[y_rep]=x_rep;
+            rank[x_rep]++;
+        }else if(rank[x_rep]>rank[y_rep]){
+            parent[y_rep]=x_rep;
+        }else{
+            parent[x_rep]=y_rep;
+        }
+    }
+
+
+    int findCircleNum(vector<vector<int>>& isConnected) {
+
+        //we will be playing with union and find by rank algorithm for this
+        int rows=isConnected.size();
+        vector<int> parent(rows);
+        for(int i=0;i<rows;i++){
+            parent[i]=i;
+        }
+
+        vector<int> rank(rows,0);
+
+        for(int i=0;i<rows;i++){
+            for(int j=i+1;j<rows;j++){
+                if(isConnected[i][j]==1){
+                    unions(parent,rank,i,j);
+                }
+            }
+        }
+
+        unordered_set<int> st;
+        for(int i=0;i<rows;i++){
+            st.insert(find(parent,i));
+        }
+        return st.size();
+        
+    }
