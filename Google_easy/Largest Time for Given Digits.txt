@@ -1,0 +1,65 @@
+https://leetcode.com/problems/largest-time-for-given-digits/description/
+
+
+/*
+void generate(vector<int>& arr,int i,vector<int>& perms){
+        if(i==arr.size()-1){
+            int num=0;
+            for(int i=0;i<arr.size();i++){
+                num=num*10+arr[i];
+            }
+            perms.push_back(num);
+            return;
+        }
+
+        for(int j=i;j<arr.size();j++){
+            int temp=arr[i];
+            arr[i]=arr[j];
+            arr[j]=temp;
+
+            generate(arr,i+1,perms);
+
+            temp=arr[i];
+            arr[i]=arr[j];
+            arr[j]=temp;
+        }
+        
+    }
+
+    bool isValid(int ele){
+        int hr=ele/100;
+        int min=ele%100;
+        if(hr>=0 and hr<=23 and min>=0 and min<=59){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    string largestTimeFromDigits(vector<int>& arr) {
+        vector<int> perms;
+        generate(arr,0,perms);
+
+        int maxi=-1;
+        for(auto ele: perms){
+            if(isValid(ele)){
+                maxi=max(maxi,ele);
+            }
+        }
+        if(maxi==-1){
+            return "";
+        }else{
+            string hr=to_string(maxi/100);
+            if(hr.size()==1){
+                hr="0"+hr;
+            }
+            string min=to_string(maxi%100);
+            if(min.size()==1){
+                min="0"+min;
+            }
+            
+            return hr+":"+min;
+        }
+    }
+*/
