@@ -1,0 +1,69 @@
+/*
+
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day, and an integer k.
+
+Find the maximum profit you can achieve. You may complete at most k transactions: i.e. you may buy at most k times and sell at most k times.
+
+Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+
+ 
+
+Example 1:
+
+Input: k = 2, prices = [2,4,1]
+Output: 2
+Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+Example 2:
+
+Input: k = 2, prices = [3,2,6,5,0,3]
+Output: 7
+Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-2 = 4. Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
+ 
+
+Constraints:
+
+1 <= k <= 100
+1 <= prices.length <= 1000
+0 <= prices[i] <= 1000
+
+*/
+
+int maxProfit(int k, vector<int>& prices) {
+
+        /*
+         this approach has been designed from the understanding of previous problem :-
+
+            https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/
+
+        Instead of four variables, we maintain two arrays of size k + 1:
+        
+        cost[j]: This maintains the lowest effective cost to buy the stock for the j-th transaction. Just like your cost2 leveraged sell_one, cost[j] will leverage the profit from the previous transaction (profit[j-1]).
+        
+        profit[j]: This maintains the maximum profit you can achieve after completing the j-th transaction.
+        
+        For every price in the array, we update the cost and profit for every transaction from 1 to k.
+
+        */
+
+        vector<int> cost(k+1,INT_MAX);
+
+        vector<int> profit(k+1,0);
+
+        for(int ele: prices){
+            for(int j=1;j<=k;j++){
+
+                // The cost of the j-th buy is the current price minus the profit
+
+                // we've already made from the (j-1)-th transaction.
+
+                cost[j]=min(cost[j],ele-profit[j-1]);
+
+                profit[j]=max(profit[j],ele-cost[j]);
+
+            }
+        }
+
+        return profit[k];
+        
+    }
+
