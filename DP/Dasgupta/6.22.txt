@@ -1,0 +1,12 @@
+/*
+
+
+Give an O(nt) algorithm for the following task.
+Input: A list of n positive integers a1, a2, . . . , an; a positive integer t.
+Question: Does some subset of the ai
+’s add up to t? (You can use each ai at most once.)
+(Hint: Look at subproblems of the form “does a subset of {a1, a2, . . . , ai} add up to s?” )
+
+*/
+
+//subset sum problem

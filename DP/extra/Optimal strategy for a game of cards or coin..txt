@@ -1,0 +1,110 @@
+/*
+Optimal Strategy for a games
+
+here in this game we have to maximize our results for one player but we are only allowed to pick or choose from one of the ends.
+
+Given an array arr[] containing an even number of elements, where each element represents the value of a coin placed in a row. Two players(We and our friend) are playing the game, and in every turn a player can pick either the first coin or the last coin from the row. Once a coin is taken, it cannot be chosen again.
+Determine the maximum amount of money we can surely secure if we move first, assuming the opponent is also playing greedily.
+
+
+
+1. Define the State:
+     Let DP[i][j] be the maximum possible value the first player (the one whose turn it is) can definitely collect from the subarray of cards s_i ... s_j.
+
+
+2. The Recurrence Relation:
+     When faced with the sequence s_i .... s_j, the current player has two choices:
+        Choice A: Pick s_i:  The opponent is left with s_{i+1} .... s_j. The opponent will play optimally, which effectively minimizes the remaining value available to you.
+        
+                ->If the opponent picks s_{i+1}, you will be left with s_{i+2} .... s_j.
+                ->If the opponent picks s_j, you will be left with s_{i+1} .... s_{j-1}.
+                Therefore, the value you get from Choice A is: s_i + min(DP[i+2][j], DP[i+1][j-1]).
+                
+        
+        Choice B: Pick s_j. The opponent is left with s_i .... s_{j-1}. Again, they play optimally to minimize your future score.
+        
+                -> If they pick s_i, you are left with s_{i+1} .... s_{j-1}.
+                -> If they pick s_{j-1}, you are left with s_i .... s_{j-2}.
+                Therefore, the value you get from Choice B is: s_j + min(DP[i+1][j-1], DP[i][j-2])
+                
+                
+    
+    DP[i][j] = max { s_i + min(DP[i+2][j], DP[i+1][j-1]) , s_j + min(DP[i+1][j-1], DP[i][j-2]) }
+
+this methods gives the best score that player1 can have by making the first move.
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	vector<int> cards = {20, 100, 10, 1};
+	
+	int n=cards.size();
+	if(n==0){
+	    return 0;
+	}
+	
+	// dp[i][j] stores the max score a player can get from subarray s[i...j]
+	vector<vector<int>> dp(n,vector<int>(n,0));
+	
+	
+	// gap represents the distance between i and j (i.e., interval length - 1)
+	//By placing gap as the outer loop, we strictly say: "Calculate the answers for all 1-card games, then all 2-card games, then all 3-card games..."
+	
+	/*
+	
+        Pass 1: gap = 0 (The Main Diagonal)
+        
+        i=0, j=0: calculates dp[0][0]
+        
+        i=1, j=1: calculates dp[1][1]
+        
+        i=2, j=2: calculates dp[2][2]
+        
+        i=3, j=3: calculates dp[3][3]
+        (All 1-card sequences are now solved)
+        
+        Pass 2: gap = 1 (The Next Diagonal Up)
+        
+        i=0, j=1: calculates dp[0][1]
+        
+        i=1, j=2: calculates dp[1][2]
+        
+        i=2, j=3: calculates dp[2][3]
+        (All 2-card sequences are now solved)
+        	
+    */
+	for(int gap=0;gap<n;gap++){
+	    for(int i=0,j=gap;j<n;j++,i++){
+	        
+	        if(gap==0){
+	            //only one card left.
+	            dp[i][j]=cards[i];
+	        }else if(gap==1){
+	            //two card left, we pick the max of two
+	            dp[i][j]=max(cards[i],cards[j]);
+	        }else{
+	            // Min-Max Transition
+                // If we pick s[i], the opponent will leave us with the minimum of the next available states
+                
+                int pick_left = cards[i] + min(dp[i + 2][j], dp[i + 1][j - 1]);
+                
+                // If we pick s[j], the opponent minimizes our remaining choices
+                
+                int pick_right = cards[j] + min(dp[i + 1][j - 1], dp[i][j - 2]);
+                
+                dp[i][j] = max(pick_left, pick_right);
+	        }
+	        
+	    }
+	}
+	// The answer for the full sequence from index 0 to n-1
+	cout<<dp[0][n-1];
+	
+	
+	
+
+}

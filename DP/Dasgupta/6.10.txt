@@ -1,0 +1,63 @@
+/*
+
+Counting heads. Given integers n and k, along with p1, . . . , pn ∈ [0, 1], you want to determine the
+probability of obtaining exactly k heads when n biased coins are tossed independently at random,
+where pi is the probability that the ith coin comes up heads. Give an O(n^2) algorithm for this
+task.2 Assume you can multiply and add two numbers in [0, 1] in O(1) time.
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+double helper(vector<double>& probs,int n,int k){
+    
+    if(k>n){
+        return 0.0;
+    }
+    
+    // dp[j] will store the probability of getting exactly j heads.
+    vector<double> dp(k+1,0.0);
+    
+    dp[0]=1.0;// Base case: 0 heads with 0 coins is guaranteed (probability 1)
+    
+    
+    for(int i=1;i<=n;i++){
+        double curr_prob=probs[i-1];
+        
+        // We only need to check up to min(i, k) because we can't have more heads than coins tossed
+        for(int j=min(i,k);j>=0;j--){
+            
+            // Probability if the current coin comes up Heads
+            //here dp[j-1] means that prevously we got k-1 heads and now we can get one more head to make total k heads
+            double prob_heads = (j > 0) ? (dp[j - 1] * curr_prob) : 0.0;
+            
+            
+            
+            // Probability if the current coin comes up Tails
+            //here dp[j] means that previously we got our k heads and now we want tail only our total is already k
+            double prob_tails = dp[j] * (1.0 - curr_prob);
+            
+            
+            // The new probability is the sum of both paths
+            dp[j] = prob_heads + prob_tails;
+        }
+    }
+    
+    return dp[k];
+    
+    
+}
+
+int main() {
+	// your code goes here
+	int n = 3; 
+    int k = 2;
+    
+    // Probabilities of getting heads for coin 1, coin 2, and coin 3
+    vector<double> probabilities = {0.2, 0.5, 0.8}; 
+    
+    cout<<helper(probabilities,n,k);
+
+}

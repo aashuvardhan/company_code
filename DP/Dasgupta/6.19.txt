@@ -1,0 +1,17 @@
+/*
+
+Here is yet another variation on the change-making problem (Exercise 6.17).
+Given an unlimited supply of coins of denominations x1, x2, . . . , xn, we wish to make change for
+a value v using at most k coins; that is, we wish to find a set of ≤ k coins whose total value is v.
+This might not be possible: for instance, if the denominations are 5 and 10 and k = 6, then we
+can make change for 55 but not for 65. Give an efficient dynamic-programming algorithm for the
+following problem.
+Input: x1, . . . , xn; k; v.
+Question: Is it possible to make change for v using at most k coins, of denominations
+x1, . . . , xn?
+
+
+*/
+
+
+//this is a variation of minimum number of coins to make up the given value, here with a constraint that the minimum number must be less than equal to k. just basic.

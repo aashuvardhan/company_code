@@ -1,0 +1,51 @@
+/*
+
+
+Consider the following variation on the change-making problem (Exercise 6.17): you are given
+denominations x1, x2, . . . , xn, and you want to make change for a value v, but you are allowed to
+use each denomination at most once. For instance, if the denominations are 1, 5, 10, 20, then you
+can make change for 16 = 1 + 15 and for 31 = 1 + 10 + 20 but not for 40 (because you can’t use 20
+twice).
+Input: Positive integers x1, x2, . . . , xn; another integer v.
+Output: Can you make change for v, using each denomination xi at most once?
+Show how to solve this problem in time O(nv).
+
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	vector<int> coins={1, 5, 10, 20};
+	int n=coins.size();
+	
+	int value=31;
+	
+	
+	vector<vector<bool>> tab(n+1,vector<bool>(value+1));
+	
+	for(int i=0;i<=value;i++){
+	    tab[0][i]=0;
+	}
+	
+	for(int i=0;i<=n;i++){
+	    tab[i][0]=1;
+	}
+	
+	for(int i=1;i<=n;i++){
+	    for(int j=1;j<=value;j++){
+	        
+	        if(coins[i-1]<=j){
+	            tab[i][j]=tab[i-1][j-coins[i-1]] or tab[i-1][j];
+	        }else{
+	            tab[i][j]=tab[i-1][j];
+	        }
+	    }
+	}
+	
+	cout<<tab[n][value];
+
+}

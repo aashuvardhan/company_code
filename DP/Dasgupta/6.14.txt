@@ -1,0 +1,82 @@
+/*
+
+Cutting cloth. You are given a rectangular piece of cloth with dimensions X × Y , where X and
+Y are positive integers, and a list of n products that can be made using the cloth. For each
+product i ∈ [1, n] you know that a rectangle of cloth of dimensions ai × bi is needed and that the
+final selling price of the product is ci. Assume the ai, bi, and ci are all positive integers. You
+have a machine that can cut any rectangular piece of cloth into two pieces either horizontally or
+vertically. Design an algorithm that determines the best return on the X × Y piece of cloth, that
+is, a strategy for cutting the cloth so that the products made from the resulting pieces give the
+maximum sum of selling prices. You are free to make as many copies of a given product as you
+wish, or none if desired.
+
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Product{
+    int a;//width
+    int b;//height
+    int c;//selling price
+};
+
+
+
+int helper(vector<Product>& prod,int X,int Y){
+    
+    
+    vector<vector<int>> dp(X+1,vector<int>(Y+1,0));
+    
+    //base case the dimension of clothes x_i,y_i must have max selling price initially set 
+    
+    for(auto p: prod){
+        if(p.a<=X and p.b<=Y){
+            dp[p.a][p.b]=max(dp[p.a][p.b],p.c);
+        }
+    }
+    
+    //now work on dp
+    // We iterate through all possible dimensions from 1x1 up to XxY
+    for(int w=1;w<=X;w++){
+        for(int h=1;h<=Y;h++){
+            
+            // Evaluate all possible vertical cuts these cuts will be marked on x-axis
+            for(int x=1;x<=w/2;x++){
+                dp[w][h]=max(dp[w][h],dp[x][h]+dp[w-x][h]);
+            }
+            
+            // Evaluate all possible horizontal cuts these cuts will be marked on y-axis.
+            
+            for(int y=1;y<=h/2;y++){
+                dp[w][h]=max(dp[w][h],dp[w][y]+dp[w][h-y]);
+            }
+        }
+    }
+    return dp[X][Y];
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	
+	int X = 10;
+    int Y = 10;
+    
+    // List of available products {width, height, price}
+    vector<Product> products = {
+        {2, 3, 10},
+        {5, 2, 20},
+        {3, 3, 15}
+    };
+    
+    cout<<helper(products,X,Y);
+
+}
+
+
+

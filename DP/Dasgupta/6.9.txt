@@ -1,0 +1,18 @@
+/*
+
+A certain string-processing language offers a primitive operation which splits a string into two
+pieces. Since this operation involves copying the original string, it takes n units of time for a
+string of length n, regardless of the location of the cut. Suppose, now, that you want to break a
+string into many pieces. The order in which the breaks are made can affect the total running
+time. For example, if you want to cut a 20-character string at positions 3 and 10, then making
+the first cut at position 3 incurs a total cost of 20 + 17 = 37, while doing position 10 first has a
+better cost of 20 + 10 = 30.
+Give a dynamic programming algorithm that, given the locations of m cuts in a string of length
+n, finds the minimum cost of breaking the string into m + 1 pieces.
+
+
+*/
+
+this problem is same as minimum cost to cut a stick in leetcode / striver sheet
+
+https://leetcode.com/problems/minimum-cost-to-cut-a-stick/description/
