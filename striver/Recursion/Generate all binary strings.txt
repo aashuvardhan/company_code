@@ -1,0 +1,64 @@
+/*
+
+https://takeuforward.org/data-structure/generate-all-binary-strings
+
+
+Problem Statement: Given an integer n, return all binary strings of length n that do not contain consecutive 1s. Return the result in lexicographically increasing order.
+
+A binary string is a string consisting only of characters '0' and '1'.
+
+Examples
+Example 1:
+Input:
+ n = 3  
+Output:
+ ["000", "001", "010", "100", "101"]  
+Explanation:
+ All binary strings of length 3 that do not contain consecutive 1s.
+
+Example 2:
+Input:
+ n = 2  
+Output:
+ ["00", "01", "10"]  
+Explanation:
+ All binary strings of length 2 that do not contain consecutive 1s.
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void generate(int& n,string str,vector<string>& res){
+    
+    if(str.size()==n){
+        res.push_back(str);
+        return;
+    }
+    
+    generate(n,str+'0',res);
+    
+    int t=str.size();
+    if(t==0 or str[t-1]!='1'){
+        generate(n,str+'1',res);
+    }
+    
+    
+}
+
+
+int main() {
+	// your code goes here
+	int n=2;
+	
+	vector<string> res;
+	
+	generate(n,"",res);
+	
+	for(auto ele: res){
+	    cout<<ele<<endl;
+	}
+
+}
