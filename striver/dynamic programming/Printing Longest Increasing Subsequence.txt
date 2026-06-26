@@ -1,0 +1,66 @@
+/*
+
+https://takeuforward.org/data-structure/printing-longest-increasing-subsequence-dp-42
+
+Problem Description: Given an array of n integers arr, return the Longest Increasing Subsequence (LIS) that is index-wise lexicographically smallest.
+
+The Longest Increasing Subsequence (LIS) is the longest subsequence where all elements are in strictly increasing order. A subsequence A1 is index-wise lexicographically smaller than another subsequence A2 if, at the first position where A1 and A2 differ, the element in A1 appears earlier in the array than corresponding element in A2.
+
+Examples
+Input: arr = [10, 22, 9, 33, 21, 50, 41, 60, 80]
+Output: [10, 22, 33, 50, 60, 80]
+Explanation: The LIS is [10, 22, 33, 50, 60, 80] and it is the lexicographically smallest.
+Input: arr = [1, 3, 2, 4, 6, 5]
+Output: [1, 3, 4, 6] 
+Explanation: Possible LIS sequences are [1, 3, 4, 6] and [1, 2, 4, 6]. Since [1, 3, 4, 6] is index-wise lexicographically smaller, it is the result.
+
+
+*/
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	vector<int> arr={10, 22, 9, 33, 21, 50, 41, 60, 80};
+	int n=arr.size();
+	
+	vector<int> lis(n,-1);
+	
+	int maxi=INT_MIN;//used to find the maxi value of lis.
+	
+	for(int i=0;i<n;i++){
+	    lis[i]=1;
+	    for(int j=0;j<i;j++){
+	        if(arr[j]<arr[i]){
+	            lis[i]=max(lis[i],lis[j]+1);
+	        }
+	    }
+	    maxi=max(maxi,lis[i]);
+	}
+	
+	for(auto ele: lis){
+	    cout<<ele<<"  ";
+	}
+	cout<<endl;
+	
+	vector<int> res;
+	maxi++;
+	for(int i=n-1;i>=0;i--){
+        if(lis[i]==maxi-1){
+            res.push_back(arr[i]);
+            maxi--;
+        }else if(lis[i]==maxi){
+            res.back()=arr[i];
+        }
+	}
+	
+	reverse(res.begin(),res.end());
+	for(auto ele: res){
+	    cout<<ele<<"  ";
+	}
+	
+
+}

@@ -1,0 +1,90 @@
+/*
+
+Problem Statement: Given the root of a Binary Tree, create a function that 
+performs a postorder traversal using two stacks and returns an array containing the traversal sequence.
+
+
+Create two stacks: one for holding nodes and another for storing the final postorder traversal sequence. Initialize an array `postorder` to store the traversal sequence.
+Push the root node to the first stack.
+Process the nodes until the first stack is empty:
+Pop a node from the top of the first stack.
+Push this node onto the second stack.
+Push its left child (if it exists) onto the first stack.
+Push its right child (if it exists) onto the first stack.
+Once the first stack is empty, retrieve the nodes in the postorder sequence by popping nodes from the second stack one by one and store them in the postorder array.
+
+
+*/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node{
+    int data;
+    Node* left;
+    Node* right;
+    
+    Node(int x){
+        data=x;
+        left=NULL;
+        right=NULL;
+    }
+};
+
+
+void postorder(Node* root){
+    if(root==NULL){
+        return;
+    }
+    postorder(root->left);
+    postorder(root->right);
+    cout<<root->data<<"  ";
+}
+
+int main() {
+	// your code goes here
+	
+	Node* root=new Node(10);
+    root->left=new Node(20);
+    root->left->right=new Node(5);
+    root->left->left=new Node(30);
+    root->left->left->right=new Node(50);
+    root->left->left->left=new Node(40);
+    
+    root->left->left->left->left=new Node(60);
+    root->left->left->left->left->left=new Node(70);
+    
+    stack<Node*> st1;
+    stack<Node*> st2;
+    
+    postorder(root);
+    cout<<endl;
+    
+    st1.push(root);
+    
+    while(st1.size()!=0){
+        Node* curr=st1.top();
+        st1.pop();
+        
+        st2.push(curr);
+        
+        if(curr->left!=NULL){
+            st1.push(curr->left);
+        }
+        if(curr->right!=NULL){
+            st1.push(curr->right);
+        }
+    }
+    
+    while(st2.size()!=0){
+        Node* curr=st2.top();
+        st2.pop();
+        cout<<curr->data<<"  ";
+    }
+    
+    cout<<endl;
+    
+    
+
+}
