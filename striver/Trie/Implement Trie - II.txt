@@ -1,0 +1,172 @@
+/*
+
+https://takeuforward.org/data-structure/implement-trie-ii
+
+
+Problem Statement: Implement "TRIE” data structure from scratch with the following functions.
+
+Trie(): Initialize the object of this “TRIE” data structure.
+insert(“WORD”): Insert the string “WORD” into this “TRIE” data structure.
+countWordsEqualTo(“WORD”): Return how many times this “WORD” is present in this “TRIE”.
+countWordsStartingWith(“PREFIX”): Return how many words are there in this “TRIE” that have the string “PREFIX” as a prefix.
+erase(“WORD”): Delete one occurrence of the string “WORD” from the “TRIE”.
+Examples
+Example 1:
+Input:
+  
+["Trie", "insert", "countWordsEqualTo", "insert", "countWordsStartingWith", "erase", "countWordsStartingWith"]  
+[ [], ["apple"], ["apple"], ["app"], ["app"], ["apple"], ["app"] ]  
+Output:
+  
+[null, null, 1, null, 2, null, 1]  
+Explanation:
+  
+- Trie trie = new Trie()  
+- trie.insert("apple")  
+- trie.countWordsEqualTo("apple")  // returns 1  
+- trie.insert("app")  
+- trie.countWordsStartingWith("app") // returns 2  
+- trie.erase("apple")  
+- trie.countWordsStartingWith("app")   // returns 1  
+
+Example 2:
+Input:
+  
+["Trie", "insert", "countWordsEqualTo", "insert", "erase", "countWordsStartingWith"]  
+[ [], ["mango"], ["apple"], ["app"], ["app"], ["mango"] ]  
+Output:
+  
+[null, null, 0, null, null, 1]  
+Explanation:
+  
+- Trie trie = new Trie()  
+- trie.insert("mango")  
+- trie.countWordsEqualTo("apple")  // returns 0  
+- trie.insert("app")  
+- trie.erase("app")  
+- trie.countWordsStartingWith("mango") // returns 1
+
+
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct Trienode{
+    bool isEnd;
+    int nodecount;
+    Trienode* children[26];
+    
+    Trienode(){
+        isEnd=false;
+        nodecount=0;
+        for(int i=0;i<26;i++){
+            children[i]=NULL;
+        }
+    }
+};
+
+void insert(Trienode* root,string str){
+    Trienode* curr=root;
+    
+    for(int i=0;i<str.size();i++){
+        int index=str[i]-'a';
+        if(curr->children[index]==NULL){
+            curr->children[index]=new Trienode();
+            
+        }
+        curr->nodecount++;
+        curr=curr->children[index];
+    }
+    curr->isEnd=true;
+}
+
+int countWordsEqualTo(Trienode* root,string str){
+    Trienode* curr=root;
+    int res=0;
+    for(int i=0;i<str.size();i++){
+        int index=str[i]-'a';
+        if(curr->children[index]==NULL){
+            return 0;
+        }
+        res=curr->nodecount;
+        curr=curr->children[index];
+        
+    }
+    if(curr->isEnd==true){
+        return res;
+    }else{
+        return 0;
+    }
+}
+
+
+int countWordsStartingWith(Trienode* root,string str){
+    Trienode* curr=root;
+    int res=0;
+    for(int i=0;i<str.size();i++){
+        int index=str[i]-'a';
+        if(curr->children[index]==NULL){
+            return 0;
+        }
+        res=curr->nodecount;
+        curr=curr->children[index];
+    }
+    return res;
+}
+
+bool search(Trienode* root,string str){
+    Trienode* curr=root;
+    
+    for(int i=0;i<str.size();i++){
+        int index=str[i]-'a';
+        
+        if(curr->children[index]==NULL){
+            return false;
+        }
+        curr=curr->children[index];
+    }
+    return curr->isEnd;
+}
+
+
+void erase(Trienode* root,string str){
+    
+    
+    if(search(root,str)==false){
+        return;
+    }
+    
+    Trienode* curr=root;
+    
+    for(int i=0;i<str.size();i++){
+        int index=str[i]-'a';
+        curr->nodecount--;
+        curr=curr->children[index];
+    }
+}
+
+
+int main() {
+	// your code goes here
+	
+	Trienode* root=new Trienode();
+	
+	insert(root,"apple");
+	insert(root,"apple");
+	insert(root,"apple");
+	insert(root,"apple");
+	cout<<countWordsEqualTo(root,"apple")<<endl;
+	
+	insert(root,"app");
+	cout<<countWordsStartingWith(root,"app")<<endl;
+	cout<<countWordsStartingWith(root,"apple")<<endl;
+	
+	
+	erase(root,"apple");
+	cout<<countWordsStartingWith(root,"app")<<endl;
+	cout<<countWordsStartingWith(root,"apple")<<endl;
+
+}
