@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+pair<string,string> process_str(string str){
+    
+    int left=0;
+    pair<string,string> res;
+    for(int i=0;i<str.size();i++){
+        if(str[i]==' '){
+            res.first=str.substr(left,i-left);
+            left=i+1;
+            break;
+        }
+    }
+    
+    if(res.first==""){
+        res.first=str.substr(left);
+    }else{
+        res.second=str.substr(left);
+    }
+    return res;
+    
+}
+
+
+int main() {
+	// your code goes here
+	/*
+	15
+push 5
+push 10
+push 20
+push 2
+push 6
+push 4
+mini
+2
+top
+4
+pop
+4
+pop
+6
+top
+2
+mini
+2
+push 2
+top
+2
+pop
+2
+	
+	*/
+	int n;
+	cin>>n;
+	
+	stack<int> st;
+	int mini=INT_MAX;
+	for(int i=0;i<15;i++){
+	    string str;
+	    getline(cin,str);
+	    pair<string,string> curr=process_str(str);
+	    
+	    if(curr.first=="push"){
+	        int val=stoi(curr.second);
+	        if(st.size()==0){
+	            mini=val;
+	            st.push(val);
+	        }else{
+	            if(val<=mini){
+	                st.push(2*val-mini);
+	                mini=val;
+	            }else{
+	                st.push(val);
+	            }
+	        }
+	    }else if(curr.first=="pop"){
+	        int val=st.top();
+	        st.pop();
+	        
+	        if(val<=mini){
+	            cout<<mini<<endl;
+	            mini=2*mini-val;
+	            
+	        }else{
+	            cout<<val<<endl;
+	        }
+	    }else if(curr.first=="top"){
+	        int val=st.top();
+	        if(val<=mini){
+	            cout<<mini<<endl;
+	        }else{
+	            cout<<val<<endl;
+	        }
+	    }else if(curr.first=="mini"){
+	        cout<<mini<<endl;
+	    }
+	}
+	
+	
+
+}
