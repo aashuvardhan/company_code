@@ -1,0 +1,86 @@
+/*
+
+https://leetcode.com/problems/merge-k-sorted-lists/description/
+
+
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+Merge all the linked-lists into one sorted linked-list and return it.
+
+ 
+
+Example 1:
+
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+Explanation: The linked-lists are:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+merging them into one sorted linked list:
+1->1->2->3->4->4->5->6
+Example 2:
+
+Input: lists = []
+Output: []
+Example 3:
+
+Input: lists = [[]]
+Output: []
+ 
+
+Constraints:
+
+k == lists.length
+0 <= k <= 104
+0 <= lists[i].length <= 500
+-104 <= lists[i][j] <= 104
+lists[i] is sorted in ascending order.
+The sum of lists[i].length will not exceed 104.
+
+*/
+
+
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+
+        int k=lists.size();
+        if(k==0){
+            return NULL;
+        }
+
+        
+        priority_queue<pair<int,ListNode*>,vector<pair<int,ListNode*>>,greater<pair<int,ListNode*>>> pq;
+
+        for(int i=0;i<k;i++){
+            if(lists[i]!=NULL){
+                int val=lists[i]->val;
+                pq.push({val,lists[i]});
+            }
+        }
+
+        ListNode* res=NULL;
+        ListNode* temp=res;
+
+        while(pq.size()!=0){
+            pair<int,ListNode*> curr=pq.top();
+            pq.pop();
+            if(res==NULL){
+                res=new ListNode(curr.first);
+                temp=res;
+            }else{
+                temp->next=new ListNode(curr.first);
+                temp=temp->next;
+            }
+
+            if(curr.second->next!=NULL){
+                int val=curr.second->next->val;
+                pq.push({val,curr.second->next});
+            }
+        }
+
+        return res;
+
+        
+    }

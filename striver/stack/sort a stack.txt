@@ -1,0 +1,51 @@
+/*
+
+https://github.com/aashuvardhan/Data-Structure-and-Algorithm/blob/main/12.%20queue/sort%20a%20stack.ipynb
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void sorted_insert(stack<int>& st,int val){
+    if(st.size()==0 or st.top()<=val){
+        st.push(val);
+    }else{
+        int temp=st.top();
+        st.pop();
+        sorted_insert(st,val);
+        st.push(temp);
+        
+    }
+}
+
+
+void sort_stack(stack<int>& st){
+    if(st.size()!=0){
+        int temp=st.top();
+        st.pop();
+        sort_stack(st);
+        sorted_insert(st,temp);
+    }
+}
+
+
+int main() {
+	// your code goes here
+	
+	vector<int> v={-3,14,18,-5,30};
+	stack<int> st;
+	
+	for(auto ele: v){
+	    st.push(ele);
+	}
+	sort_stack(st);
+	
+	while(st.size()!=0){
+	    cout<<st.top()<<"  ";
+	    st.pop();
+	}
+	
+
+}
