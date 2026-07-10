@@ -1,0 +1,86 @@
+/*
+
+https://takeuforward.org/data-structure/count-number-of-substrings
+
+
+Problem Statement: You are given a string s and a positive integer k.
+Return the number of substrings that contain exactly k distinct characters.
+
+Examples
+Example 1:
+Input:
+ s = "pqpqs", k = 2  
+Output:
+ 7  
+Explanation:
+  All substrings with exactly 2 distinct characters:  
+"pq", "pqp", "pqpq", "qp", "qpq", "pqs", "qs"  
+Total = 7.
+
+Example 2:
+Input:
+ s = "abcbaa", k = 3  
+Output:
+ 8  
+Explanation:
+substrings that contain exactly 3 distinct characters (which are 'a', 'b', and 'c'):
+
+"abc"
+
+"abcb"
+
+"abcba"
+
+"bcba"
+
+"cba"
+
+"abcbaa"
+
+"bcbaa"
+
+"cbaa"
+
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	string str="pqpqs";
+	int k=2;
+	
+	unordered_map<char,int> umap;
+	int left=0;
+	int prev_count=0;
+	int res=0;
+	
+	for(int right=0;right<str.size();right++){
+	    umap[str[right]]++;
+	    
+	    if(umap.size()>k){
+	        umap[str[left]]--;
+	        
+	        if(umap[str[left]]==0){
+	            umap.erase(str[left]);
+	        }
+	        left++;
+	        prev_count=0;
+	        
+	    }
+	    
+	    while(umap[str[left]]>1){
+	        umap[str[left]]--;
+	        left++;
+	        prev_count++;
+	    }
+	    
+	    if(umap.size()==k){
+	        res+=(prev_count+1);
+	    }
+	    
+	}
+	cout<<res;
+
+}
