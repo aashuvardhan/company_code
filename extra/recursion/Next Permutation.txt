@@ -1,0 +1,61 @@
+/*
+
+https://github.com/aashuvardhan/Data-Structure-and-Algorithm/blob/main/3.%20recursion/find%20the%20Kth%20permutation%20.ipynb
+
+
+
+*/
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	string nums="213";
+	int n=nums.size();
+	int ind1=-1;
+	
+	for(int i=n-2;i>=0;i--){
+	    if(nums[i]<nums[i+1]){
+	        ind1=i;
+	        break;
+	    }
+	}
+	
+	if(ind1==-1){
+	    sort(nums.begin(),nums.end());
+	    cout<<nums<<endl;
+	}else{
+	    int ind2=-1;
+	    
+	    for(int i=n-1;i>=0;i--){
+	        if(nums[i]>nums[ind1]){
+	            ind2=i;
+	            break;
+	        }
+	    }
+	    
+	    char temp=nums[ind1];
+	    nums[ind1]=nums[ind2];
+	    nums[ind2]=temp;
+	    
+	    int start=ind1+1;
+	    int end=n-1;
+	    while(start<end){
+	        char temp2=nums[start];
+	        nums[start]=nums[end];
+	        nums[end]=temp2;
+	        start++;
+	        end--;
+	    }
+	    
+	    cout<<nums<<endl;
+	    
+	    
+	}
+	
+	
+
+}

@@ -1,0 +1,84 @@
+/*
+
+Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sum to target.
+
+Each number in candidates may only be used once in the combination.
+
+Note: The solution set must not contain duplicate combinations.
+
+ 
+
+Example 1:
+
+Input: candidates = [10,1,2,7,6,1,5], target = 8
+Output: 
+[
+[1,1,6],
+[1,2,5],
+[1,7],
+[2,6]
+]
+
+
+
+
+*/
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void subset(vector<int>& arr,int ind,int target,vector<int> path,vector<vector<int>>& res){
+    
+    if(target<0){
+        return;
+    }
+    
+    if(target==0){
+        res.push_back(path);
+        return;
+    }
+    
+    if(ind==arr.size()){
+        return;
+    }
+    
+    for(int i=ind;i<arr.size();i++){
+        if(i>ind and arr[i-1]==arr[i]){
+            continue;
+        }
+        path.push_back(arr[i]);
+        subset(arr,i+1,target-arr[i],path,res);
+        path.pop_back();
+    }
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	vector<int> arr={10,1,2,7,6,1,5};
+	int target=8;
+	
+	vector<vector<int>> res;
+	
+	sort(arr.begin(),arr.end());
+	
+	subset(arr,0,target,{},res);
+	
+	for(auto ele: res){
+	    for(auto ite: ele){
+	        cout<<ite<<"  ";
+	    }
+	    cout<<endl;
+	}
+	
+	
+	
+
+}
