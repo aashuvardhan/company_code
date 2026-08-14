@@ -1,0 +1,150 @@
+/*
+
+https://algo.monster/liteproblems/305
+
+
+
+
+Test Case 1: The "Cross" (Connecting 4 distinct islands)This tests if your code correctly merges multiple separate islands into a single island when a central piece of land is added.m: 3n: 3positions: {{0, 1}, {1, 0}, {1, 2}, {2, 1}, {1, 1}}Expected Output: [1, 2, 3, 4, 1]Explanation: The first 4 operations place disconnected lands on the top, left, right, and bottom edges, resulting in 4 islands. The final operation at {1, 1} connects all four of them into one single island.
+
+
+Test Case 2: Duplicate Positions (Adding land where it already exists)This tests the condition where the input array tries to add land to a cell that is already land (which you are handling correctly with your if(grid[x][y]) check).m: 3n: 3positions: {{0, 0}, {0, 0}, {1, 1}, {1, 1}, {0, 1}}Expected Output: [1, 1, 2, 2, 1]Explanation: Adding {0, 0} twice keeps the count at 1. Adding {1, 1} twice keeps the count at 2. Finally, {0, 1} bridges the two existing islands together.
+
+
+Test Case 3: Forming a Cycle (Neighbors share the same parent)This is a crucial test for Union-Find. When adding a new piece of land, its neighbors might already belong to the same island. If you blindly decrement totalisland without checking if the parents are actually distinct, your count will be wrong.m: 2n: 2positions: {{0, 0}, {0, 1}, {1, 0}, {1, 1}}Expected Output: [1, 1, 1, 1]Explanation:{0,0} creates 1 island.{0,1} connects to it (1 island).{1,0} connects to it (1 island).{1,1} is placed in the corner. Its neighbors {0,1} and {1,0} are already part of the same island. Merging them should not decrement the total island count below 1.
+
+
+Test Case 4: 1D Grid (Line)This tests if your grid boundaries are handled correctly without going out of bounds when either $m$ or $n$ is 1.m: 1n: 5positions: {{0, 0}, {0, 4}, {0, 2}, {0, 1}, {0, 3}}Expected Output: [1, 2, 3, 2, 1]Explanation:Start with 3 disconnected pieces at index 0, 4, and 2. (Count: 3){0, 1} connects index 0 and 2. (Count: 2){0, 3} connects the remaining segments. (Count: 1)
+
+
+Test Case 5: The "Checkerboard" MergeThis tests a larger scenario where multiple isolated islands are built and then systematically merged.m: 3n: 3positions: {{0, 0}, {0, 2}, {2, 0}, {2, 2}, {1, 1}, {0, 1}, {1, 0}, {1, 2}, {2, 1}}Expected Output: [1, 2, 3, 4, 5, 3, 2, 1, 1]Explanation:The first 5 operations place land on the 4 corners and the center, creating 5 distinct islands.Adding {0, 1} connects {0,0}, {0,2}, and {1,1} (3 islands become 1), dropping the count from 5 to 3.Subsequent edges connect the remaining corners until only 1 large island remains.
+
+*/
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int find_parent(int x,vector<int>& parent){
+    
+    if(parent[x]==-1){
+        return x;
+    }else{
+        return parent[x]=find_parent(parent[x],parent);
+    }
+}
+
+
+bool unions(int x,int y,vector<int>& parent,vector<int>& rank){
+    
+    int x_rep=find_parent(x,parent);
+    int y_rep=find_parent(y,parent);
+    
+    if(x_rep==y_rep){
+        return false;
+    }else{
+        if(rank[x_rep]>rank[y_rep]){
+            parent[y_rep]=x_rep;
+        }else if(rank[y_rep]>rank[x_rep]){
+            parent[x_rep]=y_rep;
+        }else{
+            parent[y_rep]=x_rep;
+            rank[x_rep]++;
+        }
+        return true;
+    }
+    
+    
+}
+
+
+int main() {
+	// your code goes here
+	int m=3;
+	int n=3;
+	vector<vector<int>> grid(m,vector<int>(n,0));
+	
+	vector<pair<int,int>> pos={{0, 0}, {0, 2}, {2, 0}, {2, 2}, {1, 1}, {0, 1}, {1, 0}, {1, 2}, {2, 1}};
+	
+	
+	
+	vector<int> parent(m*n,-1);
+	vector<int> rank(m*n,0);
+	
+	vector<int> res;
+	
+	int totalisland=0;
+	
+	for(auto ele: pos){
+	    int x=ele.first;
+	    int y=ele.second;
+	    
+	    if(grid[x][y]){
+	        res.push_back(totalisland);
+	        continue;
+	    }
+	    
+	    grid[x][y]=1;
+	    totalisland++;
+	    
+	    //upward;
+	    if(x>0){
+	        if(grid[x-1][y]){
+	            
+	            int oldpos=x*n+y;
+	            int newpos=(x-1)*n+y;
+	            if(unions(oldpos,newpos,parent,rank)){
+	                totalisland--;
+	            }
+	        }
+	    }
+	    
+	    //downward;
+	    if(x<m-1){
+	        if(grid[x+1][y]){
+	            
+	            int oldpos=x*n+y;
+	            int newpos=(x+1)*n+y;
+	            
+	            if(unions(oldpos,newpos,parent,rank)){
+	                totalisland--;
+	            }
+	        }
+	    }
+	    
+	    //right;
+	    if(y<n-1){
+	        if(grid[x][y+1]){
+	            
+	            int oldpos=x*n+y;
+	            int newpos=x*n+(y+1);
+	            if(unions(oldpos,newpos,parent,rank)){
+	                totalisland--;
+	            }
+	        }
+	    }
+	    
+	    //left;
+	    if(y>0){
+	        if(grid[x][y-1]){
+	            
+	            int oldpos=x*n+y;
+	            int newpos=x*n+(y-1);
+	            if(unions(oldpos,newpos,parent,rank)){
+	                totalisland--;
+	            }
+	        }
+	    }
+	    
+	    res.push_back(totalisland);
+	    
+	    
+	}
+	
+	for(auto ele: res){
+	    cout<<ele<<"   ";
+	}
+	
+	
+}
