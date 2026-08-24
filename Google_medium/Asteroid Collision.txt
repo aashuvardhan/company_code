@@ -34,41 +34,36 @@ Explanation: The asteroid -6 makes the asteroid 3 and 5 explode, and then contin
 
 
 vector<int> asteroidCollision(vector<int>& asteroids) {
-        vector<int> res;
 
         stack<int> st;
 
         for(auto ele: asteroids){
-            if(ele<0){
-                if(st.size()==0){
-                    res.push_back(ele);
+
+            while(st.size()!=0 and (st.top()>0 and ele<0)){
+                if(st.top()<abs(ele)){
+                    st.pop();
                 }else{
-                    bool flagger=false;
-                    while(st.size()!=0 and st.top()<=abs(ele)){
-                        if(st.top()==abs(ele)){
-                            flagger=true;
-                            st.pop();
-                            break;
-                        }else{
-                            st.pop();
-                        }
-                    }
-                    if(st.size()==0 and flagger==false){
-                        res.push_back(ele);
-                    }
+                    break;
                 }
-            }else{
-                st.push(ele);
             }
+            if(st.size()!=0 and ele<0 and st.top()==abs(ele)){
+                st.pop();
+                continue;
+            }
+            if(st.size()!=0 and ele<0 and st.top()>abs(ele)){
+                continue;
+            }
+            //cout<<ele<<endl;
+            st.push(ele);
+
         }
-        vector<int> temp;
+
+        vector<int> lst;
         while(st.size()!=0){
-            temp.push_back(st.top());
+            lst.push_back(st.top());
             st.pop();
         }
-        reverse(temp.begin(),temp.end());
-        for(auto ele: temp){
-            res.push_back(ele);
-        }
-        return res;
+        reverse(lst.begin(),lst.end());
+        return lst;
+        
     }
