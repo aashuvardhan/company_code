@@ -28,8 +28,7 @@ string multiplier(string s,int n){
             }else if(ele==']'){
                 
                 string temp="";
-                while(st.size()!=0 and !std::all_of(st.top().begin(), st.top().end(), [](unsigned char c) { 
-                                                                            return std::isdigit(c); })){
+                while(st.size()!=0 and and isalpha(st.top()[0])){
                     
                     temp+=st.top();
                     st.pop();
