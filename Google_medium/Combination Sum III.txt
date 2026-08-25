@@ -42,45 +42,51 @@ Constraints:
  
 */
 
-void backtrack(int& n,int& k,vector<bool>& visited,int ind,int curr_sum,vector<int>& temp,vector<vector<int>>& res,int prev){
-        if(ind==k){
-            if(curr_sum==n){
-                res.push_back(temp);
-                
-            }
-            return;
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void backtrack(vector<int> temp,vector<vector<int>>& res,int ind,int start,int k,int target){
+    
+    if(ind==k){
+        if(target==0){
+            res.push_back(temp);
         }
-
-
-        for(int i=prev+1;i<=9;i++){
-            if(visited[i]==false){
-                visited[i]=true;
-                temp.push_back(i);
-                backtrack(n,k,visited,ind+1,curr_sum+i,temp,res,i);
-                temp.pop_back();
-                visited[i]=false;
-            }
-        }
-        
+        return;
     }
-
-
-
-    vector<vector<int>> combinationSum3(int k, int n) {
-
-
-        vector<bool> visited(10,false);
-        vector<int> temp;
-        vector<vector<int>> res;
-
-        int ind=0;
-        int curr_sum=0;
-        
-        //very imp
-        int prev=0;
-
-        backtrack(n,k,visited,ind,curr_sum,temp,res,prev);
-
-        return res;
-        
+    
+    if(target<0){
+        return;
     }
+    
+    for(int i=start;i<=9;i++){
+        
+        temp.push_back(i);
+        backtrack(temp,res,ind+1,i+1,k,target-i);
+        temp.pop_back();
+    }
+    
+    
+}
+
+
+int main() {
+	// your code goes here
+	int k = 3, target = 9;
+	
+	
+	vector<int> temp;
+	vector<vector<int>> res;
+	
+	int ind=0;
+	
+	backtrack(temp,res,ind,1,k,target);
+	
+	for(auto ele: res){
+	    for(auto ite: ele){
+	        cout<<ite<<"  ";
+	    }
+	    cout<<endl;
+	}
+
+}
