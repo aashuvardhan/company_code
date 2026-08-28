@@ -32,49 +32,32 @@ s consists of English letters.
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-	// your code goes here
-	string s="ccaabbb";
-	
-	int unique=1;
-	unordered_map<char,int> umap;
-	umap[s[0]]=0;
-	int res=0;
-	int start=0;
-	int end=0;
-	char first=s[0];
-	char second=s[0];
-	
-	int i=1;
-	while(i<s.size()){
-	    
-	    if(umap.find(s[i])==umap.end()){
-	        if(unique<2){
-	            unique++;
-	            umap[s[i]]=i;
-	            
-	            second=s[i];
-	        }else{
-	            int diff=end-start+1;
-	            res=max(res,diff);
-	            
-	            int prev=umap[first];
-	            start=prev+1;
-	            umap[s[i]]=i;
-	            first=second;
-	            second=s[i];
-	        }
-	        
-	    }else{
-	        umap[s[i]]=i;
-	    }
-	    end++;
-	    cout<<s[i]<<"  "<<start<<"  "<<end<<"  "<<res<<endl;
-	    i++;
-	    
-	}
-	int diff=end-start+1;
-	res=max(res,diff);
-	cout<<res;
+int lengthOfLongestSubstringTwoDistinct(string s) {
+    unordered_map<char, int> char_count;
+    int max_len = 0;
+    int start = 0;
 
+    for (int end = 0; end < s.length(); end++) {
+        // Add the current character to the window
+        char_count[s[end]]++;
+
+        // If we have more than 2 distinct characters, shrink from the left
+        while (char_count.size() > 2) {
+            char_count[s[start]]--;
+            if (char_count[s[start]] == 0) {
+                char_count.erase(s[start]); // Properly remove evicted characters
+            }
+            start++;
+        }
+
+        // Update the maximum length found so far
+        max_len = max(max_len, end - start + 1);
+    }
+    return max_len;
+}
+
+int main() {
+    string s = "eceba";
+    cout << lengthOfLongestSubstringTwoDistinct(s) << endl;
+    return 0;
 }
