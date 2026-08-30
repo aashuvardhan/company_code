@@ -86,3 +86,84 @@ void dfs(unordered_map<int,vector<int>>& umap,vector<bool>& visited,int source){
 
 
     }
+
+
+
+
+/*
+
+second approach my fav.
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int find_par(vector<int>& parent,int x){
+    if(parent[x]==x){
+        return x;
+    }else{
+        return parent[x]=find_par(parent,parent[x]);//path compression
+    }
+}
+
+
+void unions(vector<int>& parent,vector<int>& rank,int x,int y){
+    
+    int x_rep=find_par(parent,x);
+    int y_rep=find_par(parent,y);
+    
+    if(x_rep==y_rep){
+        return;
+    }
+    
+    if(rank[x_rep]==rank[y_rep]){
+        parent[y_rep]=x_rep;
+        rank[x_rep]++;
+    }else if(rank[x_rep]<rank[y_rep]){
+        parent[x_rep]=y_rep;
+    }else{
+        parent[y_rep]=x_rep;
+        
+    }
+    
+    
+}
+
+
+
+int main() {
+	// your code goes here
+	vector<pair<int,int>> stones = {{0,0},{0,1},{1,0},{1,2},{2,1},{2,2}};
+	int max_nodes = 20005;
+	vector<int> parent(max_nodes);
+	vector<int> rank(max_nodes,0);
+	
+	for(int i=0;i<max_nodes;i++){
+	    parent[i]=i;
+	}
+	
+	unordered_set<int> active_nodes;
+	
+	for(auto ele: stones){
+	    int row=ele.first;
+	    int col=ele.second+10001;
+	    
+	    unions(parent,rank,row,col);
+	    
+	    active_nodes.insert(row);
+	    active_nodes.insert(col);
+	}
+	
+	
+	unordered_set<int> unique;
+	for(auto ele: active_nodes){
+	    unique.insert(find_par(parent,ele));
+	}
+	
+	cout<<stones.size()-unique.size();
+	
+	
+
+}
+*/
