@@ -46,3 +46,39 @@ All the characters that occur in votes[0] also occur in votes[j] where 1 <= j < 
 
 
 */
+
+
+string rankTeams(vector<string>& votes) {
+
+        int n=votes[0].size();
+        
+
+        vector<vector<int>> count(n,vector<int>(26,0));
+
+        //counting
+        for(auto ele: votes){
+            
+            for(int i=0;i<n;i++){
+                int ind=ele[i]-'A';
+                count[i][ind]++;
+            }
+        }
+
+        //custom sort;
+        string s=votes[0];
+        sort(s.begin(),s.end(),[&](char a,char b){
+
+            int ind1=a-'A';
+            int ind2=b-'A';
+
+            for(int i=0;i<n;i++){
+                if(count[i][ind1]!=count[i][ind2]){
+                    return count[i][ind1]>count[i][ind2];
+                }
+            }
+            return a<b;
+
+        });
+        return s;
+        
+    }
