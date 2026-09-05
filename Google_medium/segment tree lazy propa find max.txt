@@ -21,7 +21,7 @@ void range_update(vector<int>& tree,int tree_index,int low,int high,int q_start,
             lazy[2*tree_index+1]+=lazy[tree_index];
             lazy[2*tree_index+2]+=lazy[tree_index];
         }
-		lazy[tree_ind]=0;
+		lazy[tree_index]=0;
     }
     
     //step2:- validity check
@@ -67,7 +67,7 @@ int range_query(vector<int>& tree,int tree_index,int low,int high,int q_start,in
             lazy[2*tree_index+1]+=lazy[tree_index];
             lazy[2*tree_index+2]+=lazy[tree_index];
         }
-		lazy[tree_ind]=0;
+		lazy[tree_index]=0;
     }
     
     //step2: validity check 
@@ -101,7 +101,7 @@ int construct(vector<int>& arr,vector<int>& tree,int tree_index,int low,int high
     int left=construct(arr,tree,2*tree_index+1,low,mid);
     int right=construct(arr,tree,2*tree_index+2,mid+1,high);
     
-    tree[tree_index]=left+right;
+    tree[tree_index]=max(left,right);
     return tree[tree_index];
     
     
