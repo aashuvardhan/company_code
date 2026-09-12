@@ -1,0 +1,121 @@
+/*
+
+https://leetcode.com/problems/replace-words/description/
+
+
+In English, we have a concept called root, which can be followed by some other word to form another longer word - let's call this word derivative. For example, when the root "help" is followed by the word "ful", we can form a derivative "helpful".
+
+Given a dictionary consisting of many roots and a sentence consisting of words separated by spaces, replace all the derivatives in the sentence with the root forming it. If a derivative can be replaced by more than one root, replace it with the root that has the shortest length.
+
+Return the sentence after the replacement.
+
+ 
+
+Example 1:
+
+Input: dictionary = ["cat","bat","rat"], sentence = "the cattle was rattled by the battery"
+Output: "the cat was rat by the bat"
+Example 2:
+
+Input: dictionary = ["a","b","c"], sentence = "aadsfasf absbs bbab cadsfafs"
+Output: "a a b c"
+ 
+
+Constraints:
+
+1 <= dictionary.length <= 1000
+1 <= dictionary[i].length <= 100
+dictionary[i] consists of only lower-case letters.
+1 <= sentence.length <= 106
+sentence consists of only lower-case letters and spaces.
+The number of words in sentence is in the range [1, 1000]
+The length of each word in sentence is in the range [1, 1000]
+Every two consecutive words in sentence will be separated by exactly one space.
+sentence does not have leading or trailing spaces.
+
+*/
+
+struct Trienode{
+        bool isEnd;
+        Trienode* child[26];
+        Trienode(){
+            for(int i=0;i<26;i++){
+                child[i]=NULL;
+            }
+            isEnd=false;
+        }
+    };
+
+
+    void insert(Trienode* root,string str){
+
+        Trienode* curr=root;
+        for(auto ele: str){
+            int ind=ele-'a';
+            if(curr->child[ind]==NULL){
+                curr->child[ind]=new Trienode();
+            }
+            curr=curr->child[ind];
+        }
+        curr->isEnd=true;
+
+    }
+
+    string prefix_finder(Trienode* root,string str){
+
+        Trienode* curr=root;
+        string temp="";
+
+        for(auto ele: str){
+
+            if(curr->isEnd==true){
+                return temp;
+            }
+
+
+            int ind=ele-'a';
+
+            if(curr->child[ind]!=NULL){
+                temp+=ele;
+                curr=curr->child[ind];
+            }else{
+                break;
+            }
+        }
+
+        if(curr->isEnd==true){
+            return temp;
+        }else{
+            return str;
+        }
+        
+
+
+    }
+
+
+    string replaceWords(vector<string>& dict, string sent) {
+        
+        Trienode* root=new Trienode();
+
+        for(auto ele: dict){
+            insert(root,ele);
+        }
+
+        string news="";
+        int start=0;
+        int i=0;
+        for(;i<sent.size();i++){
+            if(sent[i]==' '){
+                string word=sent.substr(start,i-start);
+                news+=prefix_finder(root,word);
+                news+=" ";
+                start=i+1;
+            }
+        }
+
+        string word=sent.substr(start,i-start);
+        news+=prefix_finder(root,word);
+        return news;
+
+    }
